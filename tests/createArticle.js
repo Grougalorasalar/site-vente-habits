@@ -2,9 +2,11 @@ var myHeaders = new Headers();
 myHeaders.append("Content-Type", "application/json");
 
 var raw = JSON.stringify({
-  "nom_article": "Nom de l'article",
-  "prix_article": 19.99,
-  "description_article": "Description de l'article",
+  "sessionID": "",
+  "action": "CreateArticle",
+  "nom_article": "Nouvel article",
+  "prix_article": 24.99,
+  "description_article": "Ceci est la description de mon nouvel article",
   "tailles": [
     {
       "taille": "XS",
@@ -27,6 +29,14 @@ var raw = JSON.stringify({
       "stock": 30
     }
   ],
+  "images": [
+    {
+      "url": "https://example.com/image1.jpg"
+    },
+    {
+      "url": "https://example.com/image2.jpg"
+    }
+  ],
   "id_vendeur": 1
 });
 
@@ -37,7 +47,7 @@ var requestOptions = {
   redirect: 'follow'
 };
 
-fetch("http://localhost:3000/api/createArticle", requestOptions)
+fetch("http://localhost:3000/api", requestOptions)
   .then(response => response.text())
   .then(result => console.log(result))
   .catch(error => console.log('error', error));
