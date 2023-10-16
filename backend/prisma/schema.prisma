@@ -27,13 +27,13 @@ model Vendeur {
 
 model Utilisateur {
   id_client             Int      @id @default(autoincrement())
-  pseudo                String
-  nom_utilisateur       String
-  prenom_utilisateur    String
-  mot_de_passe          String
-  email_utilisateur     String
-  adresse_utilisateur   String
-  telephone_utilisateur String
+  pseudo                String  @unique
+  nom                   String
+  prenom                String
+  password              String
+  email                 String  @unique
+  adresse               String
+  telephone             String
   id_vendeur            Int?
   Vendeur               Vendeur? @relation(fields: [id_vendeur], references: [id_vendeur])
 }
