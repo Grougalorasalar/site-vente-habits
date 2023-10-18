@@ -9,10 +9,31 @@ const port = 3000;
 const cors = require('cors');
 app.use(cors());
 
+function createFolder(nameFolder) {
+  const path = require('path');
+  const currentDirectory = __dirname;
+  const fs = require('fs');
+  const pathToFolder = path.join(currentDirectory, 'uploads', nameFolder);
+  console.log(pathToFolder);
+  if (!fs.existsSync(pathToFolder)) {
+     fs.mkdir(pathToFolder, { recursive: true }, (err) => {
+        if (err) {
+           console.error('Échec de la création du dossier :', err);
+        } else {
+           console.log('Le dossier ' + nameFolder + ' a été créé avec succès.');
+        }
+     });
+  } else {
+     console.log('Le dossier existe déjà.');
+  }
+}
+
 // Configuration de Multer pour la gestion des fichiers
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, './uploads'); // Répertoire où les fichiers seront stockés
+    //create folder with req.body.id_vendeur if not exist
+    createFolder(req.body.id_vendeur);
+    cb(null, './uploads/' + req.body.id_vendeur); // Répertoire où les fichiers seront stockés
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);

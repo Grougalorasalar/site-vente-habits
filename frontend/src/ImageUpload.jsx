@@ -10,6 +10,8 @@ function ImageUpload() {
     
     // Créer un objet FormData pour envoyer les images individuellement
     const formData = new FormData();
+    //ajouter l'id du vendeur
+    formData.append('id_vendeur', '1');
     for (let i = 0; i < tabImages.length; i++) {
       formData.append('files', tabImages[i]);
     }
