@@ -3,12 +3,14 @@ import Message from './Message'
 import Article from './Article'
 import VueArticles from './VueArticles'
 import CreateArticleForm from './CreateArticleForm'
-import ImageUpload from './ImageUpload'
+import ImageDownloadComponent from './ImageDownloadComponent'
+import ImageUpload from './ImageUpload copy'
+
 function App() {
 
    return (
       <div>
-         <ImageUpload />
+         <CreateArticleForm />
       </div>
    )
 }

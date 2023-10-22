@@ -3,6 +3,7 @@ const multer = require('multer');
 const path = require('path');
 
 const app = express();
+app.use(express.json());
 const port = 3000;
 
 // enable cors
@@ -57,6 +58,10 @@ app.post('/upload', upload.array('files', 3), (req, res) => {
     console.error('Erreur lors du téléchargement des fichiers : ', error);
     return res.status(500).json({ message: 'Erreur lors du téléchargement des fichiers' });
   }
+});
+
+app.post('/api/articles', (req, res) => {
+    console.log(req.body);
 });
 
 app.listen(port, () => {

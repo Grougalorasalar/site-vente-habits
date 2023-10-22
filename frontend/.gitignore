@@ -1,3 +1,5 @@
+tests/
+backend/images/
 # Logs
 logs
 *.log

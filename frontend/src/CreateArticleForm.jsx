@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
+import ImageUpload from './ImageUpload';
 
 const CreateArticleForm = () => {
+
   const [formData, setFormData] = useState({
     nom_article: '',
-    prix_article: '',
+    prix_article: 0,
     description_article: '',
-    id_vendeur: '',
-    image: '',
-    taille_xs: '',
-    taille_s: '',
-    taille_m: '',
-    taille_l: '',
-    taille_xl: '',
+    id_vendeur: 1,
+    images: [],
+    taille_xs: '0',
+    taille_s: '0',
+    taille_m: '0',
+    taille_l: '0',
+    taille_xl: '0',
   });
 
   const handleChange = (e) => {
@@ -23,6 +25,91 @@ const CreateArticleForm = () => {
     }
   };
 
+  const handleImageUpload = (tabImages) => {
+    setFormData({ ...formData, images: tabImages });
+  };
+
+  function sendSmallImage(image, id_article) {
+    // Lancer la lecture du fichier
+    const fileReader = new FileReader();
+    fileReader.readAsArrayBuffer(image);
+  
+    // Récupérer l'extension du fichier
+    const extension = image.name.split('.').pop();
+    fileReader.onload = async () => {
+      const arrayBuffer = fileReader.result;
+      const bytes = new Uint8Array(arrayBuffer);
+  
+      // Convertir Uint8Array en un tableau JavaScript
+      const uint8ArrayJS = Array.from(bytes);
+  
+      // Convertir le tableau JavaScript en une chaîne JSON
+      const json = JSON.stringify(uint8ArrayJS);
+  
+      // Envoyer les données au serveur
+      const response = await fetch('/api/images', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          "data": json,
+          "extension": extension,
+          "size": "small",
+          "id_entreprise": 1,
+          "id_user": 1,
+          "id_article": id_article
+        }),
+      });
+    }
+  }
+
+  function sendLargeImage(image, chunkSize, id_article) {
+    const totalChunks = Math.ceil(image.size / chunkSize);
+    let currentChunk = 1;
+    let offset = 0;
+  
+    function sendChunk() {
+      const fileReader = new FileReader();
+      const blob = image.slice(offset, offset + chunkSize);
+      offset += chunkSize;
+  
+      fileReader.onload = async () => {
+        const arrayBuffer = fileReader.result;
+        const bytes = new Uint8Array(arrayBuffer);
+        const uint8ArrayJS = Array.from(bytes);
+        const json = JSON.stringify(uint8ArrayJS);
+  
+        const response = await fetch('/api/images', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            "data": json,
+            "chunk": currentChunk,
+            "totalChunks": totalChunks,
+            "extension": image.name.split('.').pop(),
+            "size": "big",
+            "id_entreprise": 1,
+            "id_user": 1,
+            "id_article": id_article
+          }),
+        });
+  
+        currentChunk++;
+  
+        if (currentChunk <= totalChunks) {
+          sendChunk(); // Envoyer le chunk suivant
+        }
+      };
+  
+      fileReader.readAsArrayBuffer(blob);
+    }
+  
+    sendChunk();
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -31,12 +118,18 @@ const CreateArticleForm = () => {
     formdata.append("prix_article", formData.prix_article);
     formdata.append("description_article", formData.description_article);
     formdata.append("id_vendeur", formData.id_vendeur);
-    formdata.append("taille_xs", formData.taille_xs);
-    formdata.append("taille_s", formData.taille_s);
-    formdata.append("taille_m", formData.taille_m);
-    formdata.append("taille_l", formData.taille_l);
-    formdata.append("taille_xl", formData.taille_xl);
-    formdata.append("image", formData.image);
+
+    // ajouter toutes les tailles dans un dictionnaire
+    const dicTailles = {
+      "XS": formData.taille_xs,
+      "S": formData.taille_s,
+      "M": formData.taille_m,
+      "L": formData.taille_l,
+      "XL": formData.taille_xl,
+    };
+
+    // ajouter le tableau des tailles au FormData
+    formdata.append("tailles", JSON.stringify(dicTailles));
 
     var requestOptions = { 
       method: 'POST',
@@ -44,11 +137,22 @@ const CreateArticleForm = () => {
     };
 
     try {
-      fetch('/api/createArticle', requestOptions)
+      fetch('/api/articles', requestOptions)
         .then(response => response.json())
-        .then((data) => 
-          console.log(data)
-        )
+        .then((data) => {
+          //crer les images
+          const id_article = data.article.id_article;
+          const images = formData.images;
+          const tabImages = Array.from(images);
+          const chunkSize = 5000000;
+          tabImages.forEach((image) => {
+            if (image.size < chunkSize) {
+              sendSmallImage(image, id_article);
+            } else {
+              sendLargeImage(image, id_article);
+            }
+          });
+        })
         .catch(error => console.log('error', error));
       
     } catch (error) {
@@ -60,7 +164,7 @@ const CreateArticleForm = () => {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
     <h1 className="text-3xl font-semibold text-gray-700">Créer un article</h1>
     <p className="mb-4 text-gray-500">Remplissez le formulaire ci-dessous pour créer un article.</p>
-    <form enctype="multipart/form-data" className="max-w-md mx-auto p-4 bg-white shadow-md rounded-md" onSubmit={handleSubmit}>
+    <form encType="multipart/form-data" className="max-w-md mx-auto p-4 bg-white shadow-md rounded-md" onSubmit={handleSubmit}>
       <div className="mb-4">
         <label htmlFor="nom_article" className="block text-gray-600">Nom de l'article:</label>
         <input
@@ -99,16 +203,7 @@ const CreateArticleForm = () => {
         />
       </div>
       <div className="mb-4">
-        <label htmlFor="image" className="block text-gray-600">Image de l'article:</label>
-        <input
-          type="file"
-          id="image"
-          name="image"
-          accept="image/*"
-          multiple
-          onChange={handleChange}
-          className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-400"
-        />
+        <ImageUpload onImageUpload={handleImageUpload} />
       </div>
   <div className="m-2">
   <h2 className="text-xl font-bold mb-2">Stock</h2>
