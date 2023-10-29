@@ -219,7 +219,7 @@ async function saveImages(size, body, res) {
          const user = await prisma.Image.create({
             data: {
                articleId: id_article,
-               url: "images/" + id_entreprise + "/" + id_user + "/" + id_article + "/" + uniqueSuffix + "." + extension,
+               url: "/api/" + "images/" + id_entreprise + "/" + id_user + "/" + id_article + "/" + uniqueSuffix + "." + extension,
             },
          });
          console.log("Image enregistrée dans la base de données");
@@ -279,6 +279,73 @@ app.get('/', (req, res) => {
 // s'authentifier
 app.post('/api/auth', (req, res) => {
    auth(req, res);
+} );
+
+// récupérer tous les articles
+app.get('/api/articles', async (req, res) => {
+   const articles = await prisma.article.findMany({
+      
+   });
+   res.status(200).json({ articles });
+} );
+
+// récupérer l'article en fonction de l'id
+app.get('/api/articles/:id', async (req, res) => {
+   const id = parseInt(req.params.id);
+
+   const article = await prisma.article.findUnique({
+      where: {
+         id: id,
+      },
+   });
+   res.status(200).json({ article });
+} );
+
+// récupérer tous les images
+app.get('/api/images', async (req, res) => {
+   const images = await prisma.image.findMany({
+      
+   });
+   res.status(200).json({ images: images });
+} );
+
+// récupérer les images d'un article
+app.get('/api/images/:id_article', async (req, res) => {
+   const id_article = parseInt(req.params.id_article);
+
+   const images = await prisma.image.findMany({
+      where: {
+         articleId: id_article,
+      },
+   });
+   res.status(200).json({ images: images });
+}
+);
+
+//display image
+app.get('/api/images/:id_entreprise/:id_user/:id_article/:file', async (req, res) => {
+   const id_article = parseInt(req.params.id_article);
+
+   const images = await prisma.image.findMany({
+      where: {
+         articleId: id_article,
+      },
+   });
+   const __dirname = path.dirname(fileURLToPath(import.meta.url));
+   res.sendFile(path.join(__dirname, images[0].url));
+} );
+
+// afficher l'image avec l'id de l'entreprise, l'id de l'utilisateur et l'id de l'article
+app.get('/api/images/:id_entreprise/:id_user/:id_article/:file', async (req, res) => {k
+   const id_article = parseInt(req.params.id_article);
+
+   const images = await prisma.image.findMany({
+      where: {
+         articleId: id_article,
+      },
+   });
+   const __dirname = path.dirname(fileURLToPath(import.meta.url));
+   res.sendFile(path.join(__dirname, images[0].url));
 } );
 
 // créer un article

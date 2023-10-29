@@ -5,12 +5,13 @@ import VueArticles from './VueArticles'
 import CreateArticleForm from './CreateArticleForm'
 import ImageDownloadComponent from './ImageDownloadComponent'
 import ImageUpload from './ImageUpload copy'
-
+import GridCards from './GridCards'
+import Menu from './Menu'
 function App() {
 
    return (
       <div>
-         <CreateArticleForm />
+         <Menu/>
       </div>
    )
 }

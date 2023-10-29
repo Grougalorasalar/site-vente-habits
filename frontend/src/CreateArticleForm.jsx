@@ -140,6 +140,7 @@ const CreateArticleForm = () => {
       fetch('/api/articles', requestOptions)
         .then(response => response.json())
         .then((data) => {
+          console.log(data.article);
           //crer les images
           const id_article = data.article.id_article;
           const images = formData.images;
