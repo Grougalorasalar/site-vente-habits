@@ -44,7 +44,8 @@ function CardImages(props) {
         </div>
     ) : (
         <figure>
-            <a href={props.articleLink}><img src={props.images} className="w-full roundered-xl"/></a>
+            <a href={props.articleLink}>
+                <img src={props.images} className="w-full roundered-xl" /></a>
         </figure>
     )
 }

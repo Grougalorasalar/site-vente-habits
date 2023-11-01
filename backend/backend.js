@@ -3,30 +3,15 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
 import path from 'path';
-import multer from 'multer';
 import { fileURLToPath } from 'url';
-import e from 'express';
 
 const app = express();
 //autoriser l'envoie de fichiers supérieurs à 1Mo
-app.use(express.json({limit: '50mb'}));
-app.use(express.urlencoded({limit: '50mb'}));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb' }));
 
 const port = 3000;
 const prisma = new PrismaClient()
-
-// Configuration pour le stockage des fichiers téléchargés
-const storage = multer.diskStorage({
-   destination: (req, file, cb) => {
-     cb(null, 'temp/'); // Répertoire où les fichiers seront stockés
-   },
-   filename: (req, file, cb) => {
-     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-     cb(null, uniqueSuffix + path.extname(file.originalname));
-   },
-});
- 
-const upload = multer({ storage });
 
 const sessiontable = []
 
@@ -36,7 +21,6 @@ async function createFolder(nameFolder) {
    const __dirname = path.dirname(__filename);
 
    const pathToFolder = path.join(__dirname, nameFolder);
-   console.log(pathToFolder);
    if (!fs.existsSync(pathToFolder)) {
       fs.mkdir(pathToFolder, { recursive: true }, (err) => {
          if (err) {
@@ -51,32 +35,50 @@ async function createFolder(nameFolder) {
 }
 
 async function createArticle(req, res) {
-    // Logique pour créer un article
-    const { nom_article, prix_article, description_article, tailles, id_vendeur } = req.body;
-    // convert prix_article to float
-    const prix_article_float = parseFloat(prix_article);
-    // convert id_vendeur to int
-    const id_vendeur_int = parseInt(id_vendeur);
+   console.log(req.body);
 
-    // créer un article dans la table Article
-    try {
+   // body data
+   const nom_article = req.body.nom_article;
+   var prix_article = req.body.prix_article;
+   const description_article = req.body.description_article;
+   const tailles = req.body.tailles;
+   const id_vendeur = req.body.id_vendeur;
+   const marque = req.body.marque;
+   const categorie = req.body.categorie;
+   const couleur = req.body.couleur;
+   const genre = req.body.genre;
+
+   //si le nombre n'est pas à virgule rajouter un .00
+   if (prix_article % 1 === 0) {
+      prix_article = prix_article + ".00";
+   }
+
+   //convertir le prix en float
+   const prix_article_float = parseFloat(prix_article);
+
+   // Convertir l'id du vendeur en entier
+   const id_vendeur_int = parseInt(id_vendeur);
+
+   // créer un article dans la table Article
+   try {
       const article = await prisma.article.create({
          data: {
             nom_article: nom_article,
             prix_article: prix_article_float,
             description_article: description_article,
             id_vendeur: id_vendeur_int,
+            marque: marque,
+            categorie: categorie,
+            couleur: couleur,
+            genre: genre,
          },
       });
 
       // Récupérer l'id de l'article créé
       const idArticle = article.id;
 
-      // Convertir tailles en dictionnaire
-      const dictTaille = JSON.parse(tailles);
-
       // Créer des enregistrements dans la table Taille en parcourant le dict tailles_dict avec comme clé la taille (XS, S, M, L, XL) et comme valeur la quantité
-      for (const [key, value] of Object.entries(dictTaille)) {
+      for (const [key, value] of Object.entries(tailles)) {
          const taille = await prisma.taille.create({
             data: {
                id_article: idArticle,
@@ -93,38 +95,42 @@ async function createArticle(req, res) {
          prix_article: prix_article_float,
          description_article: description_article,
          id_vendeur: id_vendeur_int,
-         tailles: dictTaille,
+         tailles: tailles,
+         marque: marque,
+         categorie: categorie,
+         couleur: couleur,
+         genre: genre,
       };
 
       res.status(200).json({ message: 'Article créé ', article: article_dict });
-    } catch (error) {
-       console.error(error);
-       res.status(500).json({ message: 'Erreur' });
-    }
+   } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Erreur' });
+   }
 }
 
 async function auth(req, res) {
-    // Logique pour authentifier un utilisateur
-    const { email, password } = req.body;
-    try {
-       const user = await prisma.Utilisateur.findUnique({
-            where: {
-               email: email,
-            },
-         });
-       if (user && user.password === password) {
+   // Logique pour authentifier un utilisateur
+   const { email, password } = req.body;
+   try {
+      const user = await prisma.Utilisateur.findUnique({
+         where: {
+            email: email,
+         },
+      });
+      if (user && user.password === password) {
 
          //génération d'un jeton de session
          const sessionID = jwt.sign({ userId: user.id_client }, 'buisson', { expiresIn: '1h' });
          sessiontable.push(sessionID);
 
          res.status(200).json({ message: 'Authentification réussie', sessionID: sessionID });
-       } else {
-          res.status(401).json({ message: 'Authentification échouée' });
-       }
-    } catch (error) {
-       res.status(500).json({ message: 'Erreur' });
-    }
+      } else {
+         res.status(401).json({ message: 'Authentification échouée' });
+      }
+   } catch (error) {
+      res.status(500).json({ message: 'Erreur' });
+   }
 }
 
 function verifyJetons(req, res) {
@@ -184,13 +190,11 @@ async function createUser(req, res) {
 
 async function saveImages(size, body, res) {
    //si l'image est petite
-   const small = false;
-   if(size === "small") {
-      const small = true;
+   if (size === "small") {
       const { data, extension, id_user, id_entreprise, id_article } = body;
       // créer un dossier pour l'entreprise s'il n'existe pas
       createFolder("images/" + id_entreprise);
-      
+
       // créer un dossier pour l'utilisateur s'il n'existe pas
       createFolder("images/" + id_entreprise + "/" + id_user);
 
@@ -228,17 +232,17 @@ async function saveImages(size, body, res) {
          res.status(500).json({ message: 'Erreur' });
       }
 
-   } else if(size === "big") {
+   } else if (size === "big") {
       const { data, chunk, totalChunks, extension, id_user, id_entreprise, id_article } = body;
 
       const tempFileName = "temp/" + id_user + "." + extension;
 
       // Convertissez le chunk JSON en Uint8Array
       const uint8Array = new Uint8Array(JSON.parse(data));
-    
+
       // Ajoutez le chunk au fichier en cours de création
       fs.writeFileSync(tempFileName, uint8Array, { flag: 'a' });
-    
+
       if (chunk === totalChunks) {
          // créer un dossier pour l'entreprise s'il n'existe pas
          createFolder("images/" + id_entreprise);
@@ -253,7 +257,7 @@ async function saveImages(size, body, res) {
          //renommer le fichier
          fs.renameSync(fileName, "images/" + id_entreprise + "/" + id_user + "/" + id_article + "/" + uniqueSuffix + "." + extension);
 
-        try {
+         try {
             const user = await prisma.Image.create({
                data: {
                   articleId: id_article,
@@ -266,28 +270,28 @@ async function saveImages(size, body, res) {
             res.status(500).json({ message: 'Erreur' });
          }
       } else {
-        // Il reste encore des chunks à recevoir
-        res.json({ message: 'Chunk reçu' });
+         // Il reste encore des chunks à recevoir
+         res.json({ message: 'Chunk reçu' });
       }
    }
 }
 
 app.get('/', (req, res) => {
-    res.send('Hello World, from express');
- });
+   res.send('Hello World, from express');
+});
 
 // s'authentifier
 app.post('/api/auth', (req, res) => {
    auth(req, res);
-} );
+});
 
 // récupérer tous les articles
 app.get('/api/articles', async (req, res) => {
    const articles = await prisma.article.findMany({
-      
+
    });
    res.status(200).json({ articles });
-} );
+});
 
 // récupérer l'article en fonction de l'id
 app.get('/api/articles/:id', async (req, res) => {
@@ -299,15 +303,15 @@ app.get('/api/articles/:id', async (req, res) => {
       },
    });
    res.status(200).json({ article });
-} );
+});
 
 // récupérer tous les images
 app.get('/api/images', async (req, res) => {
    const images = await prisma.image.findMany({
-      
+
    });
    res.status(200).json({ images: images });
-} );
+});
 
 // récupérer les images d'un article
 app.get('/api/images/:id_article', async (req, res) => {
@@ -322,49 +326,50 @@ app.get('/api/images/:id_article', async (req, res) => {
 }
 );
 
-//display image
+// afficher l'image avec l'id de l'entreprise, l'id de l'utilisateur et l'id de l'article
 app.get('/api/images/:id_entreprise/:id_user/:id_article/:file', async (req, res) => {
    const id_article = parseInt(req.params.id_article);
+   const file = req.params.file;
 
    const images = await prisma.image.findMany({
       where: {
          articleId: id_article,
       },
    });
-   const __dirname = path.dirname(fileURLToPath(import.meta.url));
-   res.sendFile(path.join(__dirname, images[0].url));
-} );
-
-// afficher l'image avec l'id de l'entreprise, l'id de l'utilisateur et l'id de l'article
-app.get('/api/images/:id_entreprise/:id_user/:id_article/:file', async (req, res) => {k
-   const id_article = parseInt(req.params.id_article);
-
-   const images = await prisma.image.findMany({
-      where: {
-         articleId: id_article,
-      },
-   });
-   const __dirname = path.dirname(fileURLToPath(import.meta.url));
-   res.sendFile(path.join(__dirname, images[0].url));
-} );
+   //verifier que le fichier existe dans le tableau d'images
+   var exist = false;
+   for (var i = 0; i < images.length; i++) {
+      if (images[i].url === "/api/" + "images/" + req.params.id_entreprise + "/" + req.params.id_user + "/" + req.params.id_article + "/" + file) {
+         exist = true;
+      }
+   }
+   //renvoyer le fichier si il existe
+   if (exist) {
+      const __filename = fileURLToPath(import.meta.url);
+      const __dirname = path.dirname(__filename);
+      res.sendFile(path.join(__dirname, 'images/' + req.params.id_entreprise + "/" + req.params.id_user + "/" + req.params.id_article + "/" + file));
+   } else {
+      res.status(404).json({ message: 'Image non trouvée' });
+   }
+});
 
 // créer un article
-app.post('/api/articles', upload.array('images', 3), (req, res) => {  
+app.post('/api/articles', async (req, res) => {
    createArticle(req, res);
-} );
+});
 
 // créer un utilisateur
 app.post('/api/users', async (req, res) => {
-   if(verifyJetons(req, res)) {
+   if (verifyJetons(req, res)) {
       createUser(req, res);
    }
-} );
+});
 
 app.post('/api/images', async (req, res) => {
    saveImages(req.body.size, req.body, res);
- });
+});
 
 
 app.listen(port, function () {
-    console.log("Server listening on port " + port)
+   console.log("Server listening on port " + port)
 })

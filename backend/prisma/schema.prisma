@@ -16,6 +16,10 @@ model Article {
   id_vendeur          Int
   Vendeur             Vendeur  @relation(fields: [id_vendeur], references: [id_vendeur])
   Taille              Taille[]
+  marque              String?  // Champ pour la marque de l'article
+  genre               String?  // Champ pour le genre de l'article
+  categorie            String?  // Champ pour la catégorie de l'article
+  couleur             String?  // Champ pour la couleur de l'article
 }
 
 model Vendeur {
