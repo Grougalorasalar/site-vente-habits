@@ -5,11 +5,19 @@ function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
 
-function GridCards() {
+function GridCards(props) {
     const [articles, setArticles] = useState([]);
 
     useEffect(() => {
-        fetch('/api/articles')
+        let apiUrl = '/api/articles';
+        if (props.gender === 'homme') {
+            apiUrl = apiUrl + '?gender=homme';
+        }
+        if (props.gender === 'femme') {
+            apiUrl = apiUrl + '?gender=femme';
+        }
+
+        fetch(apiUrl)
             .then((response) => response.json())
             .then(async (data) => {
                 const articlesData = data.articles.map(async (article) => {

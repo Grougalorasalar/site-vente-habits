@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import ArticleForm from './ArticleForm';
-import { useEffect } from 'react';
 import GridCards from './GridCards';
 
 function Menu() {
@@ -21,6 +20,20 @@ function Menu() {
           Articles
         </li>
         <li
+          className={`p-2 border border-gray-300 cursor-pointer mx-2 ${activeItem === 'homme' ? 'bg-blue-500 text-white' : ''
+            }`}
+          onClick={() => handleItemClick('homme')}
+        >
+          Homme
+        </li>
+        <li
+          className={`p-2 border border-gray-300 cursor-pointer mx-2 ${activeItem === 'femme' ? 'bg-blue-500 text-white' : ''
+            }`}
+          onClick={() => handleItemClick('femme')}
+        >
+          Femme
+        </li>
+        <li
           className={`p-2 border border-gray-300 cursor-pointer mx-2 ${activeItem === 'formulaire' ? 'bg-blue-500 text-white' : ''
             }`}
           onClick={() => handleItemClick('formulaire')}
@@ -35,11 +48,10 @@ function Menu() {
           ?
         </li>
       </ul>
-      {activeItem === 'carrousel' && <GridCards />}
       {activeItem === 'formulaire' && <ArticleForm />}
-      {activeItem && activeItem !== 'carrousel' && activeItem !== 'formulaire' && (
-        <div className="mt-4">Contenu de {activeItem}</div>
-      )}
+      {activeItem === 'carrousel' && <GridCards />}
+      {activeItem === 'homme' && <GridCards gender="homme" />}
+      {activeItem === 'femme' && <GridCards gender="femme" />}
     </div>
   );
 }

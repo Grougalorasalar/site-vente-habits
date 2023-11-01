@@ -3,8 +3,8 @@ import Menu from './Menu'
 function App() {
 
    return (
-      <div>
-         <Menu/>
+      <div className="App">
+         <Menu />
       </div>
    )
 }

@@ -287,11 +287,31 @@ app.post('/api/auth', (req, res) => {
 
 // récupérer tous les articles
 app.get('/api/articles', async (req, res) => {
-   const articles = await prisma.article.findMany({
+   const genre = req.query.gender;
 
-   });
-   res.status(200).json({ articles });
+   let whereCondition = {}; // Condition de recherche par défaut
+
+   if (genre === 'homme') {
+      whereCondition = {
+         genre: 'Homme',
+      };
+   } else if (genre === 'femme') {
+      whereCondition = {
+         genre: 'Femme',
+      };
+   }
+
+   try {
+      const articles = await prisma.article.findMany({
+         where: whereCondition,
+      });
+
+      res.status(200).json({ articles });
+   } catch (error) {
+      res.status(500).json({ error: "Une erreur s'est produite lors de la récupération des articles." });
+   }
 });
+
 
 // récupérer l'article en fonction de l'id
 app.get('/api/articles/:id', async (req, res) => {
