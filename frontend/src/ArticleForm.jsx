@@ -153,8 +153,6 @@ const ArticleForm = () => {
       fetch('/api/articles', requestOptions)
         .then(response => response.json())
         .then((data) => {
-          console.log(data.message);
-          console.log(data.article);
           //crer les images
           const id_article = data.article.id_article;
           const images = formData.images;
@@ -241,7 +239,7 @@ const ArticleForm = () => {
                 <option value="Veste">Veste</option>
                 <option value="Sweat">Sweat</option>
                 <option value="Chemise">Chemise</option>
-                <otion value="Blazer">Blazer</otion>
+                <option value="Blazer">Blazer</option>
               </select>
 
               <label className="mb-2 font-bold text-gray-700 text-sm">Catégorie</label>
@@ -287,6 +285,7 @@ const ArticleForm = () => {
                 className="border border-gray-300 rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full"
               >
                 <option value="Nike">Nike</option>
+                <option value="Project X Paris">Project X Paris</option>
                 <option value="Ralph Lauren">Ralph Lauren</option>
                 <option value="Adidas">Adidas</option>
                 <option value="Puma">Puma</option>

@@ -295,10 +295,17 @@ app.get('/api/articles', async (req, res) => {
 
    let whereCondition = {}; // Condition de recherche par défaut
 
+   // on affiche les articles en fonction du genre, il peut-être homme, femme ou enfant (unisexe)
    if (genre) {
       whereCondition = {
-         ...whereCondition,
-         genre: genre,
+         OR: [
+            {
+               genre: genre,
+            },
+            {
+               genre: 'Unisexe',
+            },
+         ],
       };
    }
 

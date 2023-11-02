@@ -4,14 +4,14 @@ import SearchBar from './SearchBar.jsx';
 
 function GridCards(props) {
     const [articles, setArticles] = useState([]);
-    const [searchText, setSearchText] = useState('');
     const [debouncedSearchText, setDebouncedSearchText] = useState('');
+    const [sortOrder, setSortOrder] = useState('asc');
 
     useEffect(() => {
         // Utilisation d'un effet pour gérer la recherche décalée
         const delayDebounceFn = setTimeout(() => {
             setDebouncedSearchText(props.searchText);
-        }, 100);
+        }, 10);
 
         return () => {
             clearTimeout(delayDebounceFn);
@@ -21,7 +21,7 @@ function GridCards(props) {
     useEffect(() => {
         let apiUrl = '/api/articles';
         if (props.gender === 'Homme') {
-            apiUrl = apiUrl + '?gender=Homme'
+            apiUrl = apiUrl + '?gender=Homme';
         }
         if (props.gender === 'Femme') {
             apiUrl = apiUrl + '?gender=Femme';
@@ -34,16 +34,19 @@ function GridCards(props) {
                 apiUrl = apiUrl + '?search=' + debouncedSearchText
             }
         }
-        console.log(apiUrl);
         fetch(apiUrl)
             .then((response) => response.json())
             .then(async (data) => {
+                if (sortOrder === 'asc') {
+                    data.articles.sort((a, b) => a.prix_article - b.prix_article);
+                } else if (sortOrder === 'desc') {
+                    data.articles.sort((a, b) => b.prix_article - a.prix_article);
+                }
+
                 const articlesData = data.articles.map(async (article) => {
                     const imageResponse = await fetch('/api/images/' + article.id);
                     const imageData = await imageResponse.json();
                     const images = imageData.images.map((image) => image.url);
-                    console.log(data.articles);
-
                     return {
                         id: article.id,
                         nameArticle: article.nom_article,
@@ -60,16 +63,28 @@ function GridCards(props) {
                 });
             })
             .catch((error) => console.log('error', error));
-    }, [debouncedSearchText, props.gender]);
-
-    const handleSearch = (searchText) => {
-        setSearchText(searchText);
-    }
+    }, [debouncedSearchText, props.gender, sortOrder]);
 
     return (
         <div>
             <h1 className="text-center text-3xl font-bold mt-2 mb-2">Articles</h1>
-            <section className="w-full max-w-screen-md mx-auto grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-5 mt-2 mb-2">
+            <div class="flex justify-around pr-10">
+                <div></div>
+                <div></div>
+                <div>
+                    <select className="select select-bordered w-full max-w-xs">
+                        <option
+                            className={`btn ${sortOrder === 'asc' ? 'btn-active' : ''}`}
+                            onClick={() => setSortOrder('asc')}>Prix croissant
+                        </option>
+                        <option
+                            className={`btn ${sortOrder === 'desc' ? 'btn-active' : ''}`}
+                            onClick={() => setSortOrder('desc')}>Prix décroissant
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <section className="w-fit mx-auto grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5">
                 {
                     articles.map((article) => (
                         <Card
