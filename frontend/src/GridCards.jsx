@@ -9,14 +9,21 @@ function GridCards(props) {
     useEffect(() => {
         let apiUrl = '/api/articles';
         if (props.gender === 'Homme') {
-            apiUrl = apiUrl + '?gender=Homme';
+            apiUrl = apiUrl + '?gender=Homme'
         }
         if (props.gender === 'Femme') {
             apiUrl = apiUrl + '?gender=Femme';
         }
         if (searchText) {
-            apiUrl = apiUrl + `?search=${searchText}`;
+            if (props.gender) {
+                apiUrl = apiUrl + '&search=' + searchText;
+            }
+            else {
+                apiUrl = apiUrl + '?search=' + searchText;
+            }
         }
+
+        console.log(apiUrl);
 
         fetch(apiUrl)
             .then((response) => response.json())

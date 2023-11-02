@@ -295,33 +295,6 @@ app.get('/api/articles', async (req, res) => {
 
    let whereCondition = {}; // Condition de recherche par défaut
 
-   if (search) {
-      whereCondition = {
-         OR: [
-            {
-               nom_article: {
-                  contains: search,
-               },
-            },
-            {
-               marque: {
-                  contains: search,
-               },
-            },
-            {
-               categorie: {
-                  contains: search,
-               },
-            },
-            {
-               couleur: {
-                  contains: search,
-               },
-            },
-         ],
-      };
-   }
-
    if (genre) {
       whereCondition = {
          ...whereCondition,
@@ -347,6 +320,33 @@ app.get('/api/articles', async (req, res) => {
       whereCondition = {
          ...whereCondition,
          couleur: couleur,
+      }
+   }
+
+   if (search) {
+      whereCondition = {
+         OR: [
+            {
+               nom_article: {
+                  contains: search,
+               },
+            },
+            {
+               marque: {
+                  contains: search,
+               },
+            },
+            {
+               categorie: {
+                  contains: search,
+               },
+            },
+            {
+               couleur: {
+                  contains: search,
+               },
+            },
+         ],
       };
    }
 
