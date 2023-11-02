@@ -75,7 +75,7 @@ function CardImages(props) {
         </div>
     ) : (
         <figure>
-            <img src={props.images} className="w-full roundered-xl"
+            <img src={props.images} className="w-max roundered-xl" alt={props.unique}
                 key={props.key} />
         </figure>
     )

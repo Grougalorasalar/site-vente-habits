@@ -180,7 +180,7 @@ const ArticleForm = () => {
       <form className="w-full max-w-2xl rounded-lg p-6 shadow-lg" onSubmit={handleSubmit}>
 
         <h1 className="text-3xl font-semibold text-gray-700 mb-4">Créer un article</h1>
-        <p className="mb-4 text-gray-500">Remplissez le formulaire ci-dessous pour créer un articlez.</p>
+        <p className="mb-4 text-gray-500">Remplissez le formulaire ci-dessous pour créer un article.</p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Section à gauche */}

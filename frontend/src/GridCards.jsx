@@ -5,6 +5,18 @@ import SearchBar from './SearchBar.jsx';
 function GridCards(props) {
     const [articles, setArticles] = useState([]);
     const [searchText, setSearchText] = useState('');
+    const [debouncedSearchText, setDebouncedSearchText] = useState('');
+
+    useEffect(() => {
+        // Utilisation d'un effet pour gérer la recherche décalée
+        const delayDebounceFn = setTimeout(() => {
+            setDebouncedSearchText(props.searchText);
+        }, 100);
+
+        return () => {
+            clearTimeout(delayDebounceFn);
+        };
+    }, [props.searchText]);
 
     useEffect(() => {
         let apiUrl = '/api/articles';
@@ -14,17 +26,15 @@ function GridCards(props) {
         if (props.gender === 'Femme') {
             apiUrl = apiUrl + '?gender=Femme';
         }
-        if (searchText) {
+        if (debouncedSearchText) {
             if (props.gender) {
-                apiUrl = apiUrl + '&search=' + searchText;
+                apiUrl = apiUrl + '&search=' + debouncedSearchText
             }
             else {
-                apiUrl = apiUrl + '?search=' + searchText;
+                apiUrl = apiUrl + '?search=' + debouncedSearchText
             }
         }
-
         console.log(apiUrl);
-
         fetch(apiUrl)
             .then((response) => response.json())
             .then(async (data) => {
@@ -32,6 +42,7 @@ function GridCards(props) {
                     const imageResponse = await fetch('/api/images/' + article.id);
                     const imageData = await imageResponse.json();
                     const images = imageData.images.map((image) => image.url);
+                    console.log(data.articles);
 
                     return {
                         id: article.id,
@@ -49,7 +60,7 @@ function GridCards(props) {
                 });
             })
             .catch((error) => console.log('error', error));
-    }, [searchText]);
+    }, [debouncedSearchText, props.gender]);
 
     const handleSearch = (searchText) => {
         setSearchText(searchText);
@@ -57,23 +68,20 @@ function GridCards(props) {
 
     return (
         <div>
-            <h1 className="text-center text-4xl font-bold mt-10 mb-10">Barre de recherche</h1>
-            <div className="flex justify-center">
-                <SearchBar onSearch={handleSearch} /> {/* Ajoutez la barre de recherche */}
-            </div>
-            <h1 className="text-center text-4xl font-bold mt-10 mb-10">Articles</h1>
-            <section className="w-fit mx-auto grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5">
-                {articles.map((article) => (
-                    <Card
-                        key={article.id}
-                        images={article.images}
-                        nameArticle={article.nameArticle}
-                        price={article.price}
-                        articleLink={article.articleLink}
-                        description={article.description}
-                        typeArticle={article.typeArticle}
-                    />
-                ))}
+            <h1 className="text-center text-3xl font-bold mt-2 mb-2">Articles</h1>
+            <section className="w-full max-w-screen-md mx-auto grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-5 mt-2 mb-2">
+                {
+                    articles.map((article) => (
+                        <Card
+                            key={article.id}
+                            images={article.images}
+                            nameArticle={article.nameArticle}
+                            price={article.price}
+                            articleLink={article.articleLink}
+                            description={article.description}
+                            typeArticle={article.typeArticle}
+                        />
+                    ))}
             </section>
         </div>
     );

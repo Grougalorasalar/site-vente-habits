@@ -325,28 +325,10 @@ app.get('/api/articles', async (req, res) => {
 
    if (search) {
       whereCondition = {
-         OR: [
-            {
-               nom_article: {
-                  contains: search,
-               },
-            },
-            {
-               marque: {
-                  contains: search,
-               },
-            },
-            {
-               categorie: {
-                  contains: search,
-               },
-            },
-            {
-               couleur: {
-                  contains: search,
-               },
-            },
-         ],
+         ...whereCondition,
+         nom_article: {
+            contains: search,
+         },
       };
    }
 
