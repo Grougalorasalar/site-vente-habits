@@ -288,16 +288,65 @@ app.post('/api/auth', (req, res) => {
 // récupérer tous les articles
 app.get('/api/articles', async (req, res) => {
    const genre = req.query.gender;
+   const search = req.query.search;
+   const marque = req.query.brand;
+   const categorie = req.query.category;
+   const couleur = req.query.color;
 
    let whereCondition = {}; // Condition de recherche par défaut
 
-   if (genre === 'homme') {
+   if (search) {
       whereCondition = {
-         genre: 'Homme',
+         OR: [
+            {
+               nom_article: {
+                  contains: search,
+               },
+            },
+            {
+               marque: {
+                  contains: search,
+               },
+            },
+            {
+               categorie: {
+                  contains: search,
+               },
+            },
+            {
+               couleur: {
+                  contains: search,
+               },
+            },
+         ],
       };
-   } else if (genre === 'femme') {
+   }
+
+   if (genre) {
       whereCondition = {
-         genre: 'Femme',
+         ...whereCondition,
+         genre: genre,
+      };
+   }
+
+   if (marque) {
+      whereCondition = {
+         ...whereCondition,
+         marque: marque,
+      };
+   }
+
+   if (categorie) {
+      whereCondition = {
+         ...whereCondition,
+         categorie: categorie,
+      };
+   }
+
+   if (couleur) {
+      whereCondition = {
+         ...whereCondition,
+         couleur: couleur,
       };
    }
 

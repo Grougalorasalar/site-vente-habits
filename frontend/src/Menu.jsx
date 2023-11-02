@@ -50,8 +50,8 @@ function Menu() {
       </ul>
       {activeItem === 'formulaire' && <ArticleForm />}
       {activeItem === 'carrousel' && <GridCards />}
-      {activeItem === 'homme' && <GridCards gender="homme" />}
-      {activeItem === 'femme' && <GridCards gender="femme" />}
+      {activeItem === 'homme' && <GridCards gender="Homme" />}
+      {activeItem === 'femme' && <GridCards gender="Femme" />}
     </div>
   );
 }

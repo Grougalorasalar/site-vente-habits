@@ -17,7 +17,7 @@ function Card(props) {
     return (
         <div className="group card glass w-96 bg-base-100 shadow-xl roundered-xl" >
             <CardImages images={props.images} unique={props.nameArticle} articleLink={props.articleLink} />
-            <a className="card-body" href={props.articleLink}>
+            <div className='card-body'>
                 <span className="badge">{props.typeArticle || "Product Type"}</span>
                 <h2 className="card-title">
                     {props.nameArticle || "Product Name"}
@@ -33,7 +33,7 @@ function Card(props) {
                         </svg>
                     </a>
                 </div>
-            </a>
+            </div>
         </div>
     )
 }
