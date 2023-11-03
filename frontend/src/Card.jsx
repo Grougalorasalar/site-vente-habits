@@ -21,7 +21,7 @@ function Card(props) {
                 <span className="badge">{props.typeArticle || "Product Type"}</span>
                 <h2 className="card-title">
                     {props.nameArticle || "Product Name"}
-                    <div className="badge badge-secondary">NEW</div>
+                    {/* <div className="badge badge-secondary">NEW</div> */}
                 </h2>
                 <p>{props.description || "Lorem ipsum dolor sit amet consectetur adipisicing elit."}</p>
                 <p className='text-left font-semibold flex'>{props.price || "$149"} {isSold()}</p>
