@@ -1,13 +1,58 @@
 generator client {
-   provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
-   provider = "sqlite"
-   url      = "file:./dev.db"
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
-model Message {
-  id    Int    @id @default(autoincrement())
-  text  String
+model Article {
+  id                  Int      @id @default(autoincrement())
+  nom_article         String
+  prix_article        Float
+  description_article String?
+  id_vendeur          Int
+  Vendeur             Vendeur  @relation(fields: [id_vendeur], references: [id_vendeur])
+  Taille              Taille[]
+  marque              String?  // Champ pour la marque de l'article
+  genre               String?  // Champ pour le genre de l'article
+  categorie            String?  // Champ pour la catégorie de l'article
+  couleur             String?  // Champ pour la couleur de l'article
+}
+
+model Vendeur {
+  id_vendeur     Int           @id @default(autoincrement())
+  nom_entreprise String
+  Articles       Article[]
+  Utilisateurs   Utilisateur[]
+}
+
+model Utilisateur {
+  id_client             Int      @id @default(autoincrement())
+  pseudo                String  @unique
+  nom                   String
+  prenom                String
+  password              String
+  email                 String  @unique
+  adresse               String
+  telephone             String
+  id_vendeur            Int?
+  Vendeur               Vendeur? @relation(fields: [id_vendeur], references: [id_vendeur])
+}
+
+model Taille {
+  id_article Int
+  taille     String
+  stock      Int
+  article    Article @relation(fields: [id_article], references: [id])
+
+  @@id([id_article, taille])
+}
+
+model Image {
+  id        Int     @id @default(autoincrement())
+  url       String // Le chemin de l'image ou l'URL
+  articleId Int // ID de l'article associé
 }

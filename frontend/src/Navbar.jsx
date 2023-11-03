@@ -1,3 +1,7 @@
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import SearchBar from './SearchBar';
+
 function Navbar(props) {
 
   const categories = () => {
@@ -5,14 +9,21 @@ function Navbar(props) {
     for (let i = 0; i < props.categories.length; i++) {
       tempCategories.push(
         <li key={i}>
-          <a className="bg-opacity-0 border-b-4 border-transparent hover:border-b-4 text-dark-grayish-blue font-semibold text-lg" href={props.categories[i].address} onClick={props.categories[i].click}>
+          <Link className="bg-opacity-0 border-b-4 border-transparent hover:border-b-4 text-dark-grayish-blue font-semibold text-lg" to={props.categories[i].address}>
             {props.categories[i].name}
-          </a>
+          </Link>
         </li>
       )
     }
     return tempCategories
   }
+
+  const [searchText, setSearchText] = useState('');
+
+  useEffect(() => {
+    props.onSearch(searchText);
+  }
+    , [searchText]);
 
   return (
     <div className='flex flex-col drawer-content md:px-16 md:pt-6 md:relative md:max-w-screen-xl md:mx-auto'>
@@ -45,6 +56,9 @@ function Navbar(props) {
           <ul className="menu menu-horizontal">
             {categories()}
           </ul>
+        </div>
+        <div>
+          <SearchBar onSearch={(searchText) => setSearchText(searchText)} />
         </div>
         <div className="flex items-center justify-end flex-1 gap-4 px-2">
           <div className="indicator">

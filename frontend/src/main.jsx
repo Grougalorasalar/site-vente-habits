@@ -1,31 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client'
-import GridCards from './GridCards'
-import Navbar from './Navbar'
 import './index.css'
-
-const categories = [
-  {
-    "name": "Homme",
-    "address": "#homme"
-  },
-  {
-    "name": "Femme",
-    "address": "#femme"
-  },
-  {
-    "name": "A propos",
-    "address": "#propos"
-  },
-  {
-    "name": "Contact",
-    "address": "#contact"
-  }
-]
+import App from './App';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <Navbar categories={categories} />
-    <GridCards />
+    <App />
   </React.StrictMode>,
 )
