@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ArticleForm from './ArticleForm';
 import GridCards from './GridCards';
 import SearchBar from './SearchBar';
+import NewForm from './NewForm';
 
 function Menu() {
   const [activeItem, setActiveItem] = useState(null);
@@ -40,15 +41,16 @@ function Menu() {
         </li>
         <li
           className={`px-4 py-2 bg-white text-blue-500 hover:bg-blue-500 hover-text-white border border-blue-500 cursor-pointer ${activeItem === 'item3' ? 'bg-blue-500 text-white' : ''}`}
-          onClick={() => handleItemClick('item3')}
+          onClick={() => handleItemClick('new-form')}
         >
-          ?
+          Nouveau Formulaire
         </li>
         <li className="ml-auto">
           <SearchBar onSearch={(searchText) => setSearchText(searchText)} />
         </li>
       </ul>
       {activeItem === 'formulaire' && <ArticleForm />}
+      {activeItem === 'new-form' && <NewForm />}
       {activeItem === 'carrousel' && <GridCards searchText={searchText} />}
       {activeItem === 'homme' && <GridCards gender="Homme" searchText={searchText} />}
       {activeItem === 'femme' && <GridCards gender="Femme" searchText={searchText} />}

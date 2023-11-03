@@ -184,7 +184,6 @@ const ArticleForm = () => {
           {/* Section à gauche */}
           <div className="col-span-1">
             <div className="mb-6">
-              <h2 className="text-xl font-bold mb-2">Informations de base requise</h2>
               <div className="flex flex-col mb-4">
                 <label className="mb-2 font-bold text-gray-700 text-sm">Nom de l'article</label>
                 <input
@@ -224,7 +223,6 @@ const ArticleForm = () => {
           {/* Section au milieu */}
           <div className="col-span-1">
             <div className="mb-6">
-              <h2 className="text-xl font-bold mb-2">Informations sur le produit</h2>
               <label className="mb-2 font-bold text-gray-700 text-sm">Catégorie</label>
               <select
                 name="categorie"
@@ -319,7 +317,6 @@ const ArticleForm = () => {
           {/* Section à droite */}
           <div className="col-span-1">
             <div className="mb-6">
-              <h2 className="text-xl font-bold mb-2">Tailles disponibles en stock</h2>
               <div className="flex flex-col mb-4">
                 <label className="mb-2 font-bold text-gray-700 text-sm">Taille XS</label>
                 <input
