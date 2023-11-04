@@ -23,19 +23,50 @@ function CardImages(props) {
     const carouselElement = useRef(null)
 
     const addImage = () => {
-        const images = []
+        const images = [];
 
         for (let i = 0; i < props.images.length; i++) {
-            if (i == 0) {
-                images.push(<CardCarouselItem perviousSlide={(props.images.length - 1)} currentSlide={i} nextSlide={i + 1} image={props.images[i]} carouselElement={carouselElement} articleLink={props.articleLink} />)
-            } else if (i == props.images.length - 1) {
-                images.push(<CardCarouselItem perviousSlide={i - 1} currentSlide={i} nextSlide={0} image={props.images[i]} carouselElement={carouselElement} articleLink={props.articleLink} />)
+            const key = `carousel-item-${i}`; // Créez une clé unique
+            if (i === 0) {
+                images.push(
+                    <CardCarouselItem
+                        key={key}
+                        perviousSlide={props.images.length - 1}
+                        currentSlide={i}
+                        nextSlide={i + 1}
+                        image={props.images[i]}
+                        carouselElement={carouselElement}
+                        articleLink={props.articleLink}
+                    />
+                );
+            } else if (i === props.images.length - 1) {
+                images.push(
+                    <CardCarouselItem
+                        key={key}
+                        perviousSlide={i - 1}
+                        currentSlide={i}
+                        nextSlide={0}
+                        image={props.images[i]}
+                        carouselElement={carouselElement}
+                        articleLink={props.articleLink}
+                    />
+                );
             } else {
-                images.push(<CardCarouselItem perviousSlide={i - 1} currentSlide={i} nextSlide={i + 1} image={props.images[i]} carouselElement={carouselElement} articleLink={props.articleLink} />)
+                images.push(
+                    <CardCarouselItem
+                        key={key}
+                        perviousSlide={i - 1}
+                        currentSlide={i}
+                        nextSlide={i + 1}
+                        image={props.images[i]}
+                        carouselElement={carouselElement}
+                        articleLink={props.articleLink}
+                    />
+                );
             }
         }
 
-        return images
+        return images;
     }
 
     return (props.images.length > 1) ? (
@@ -44,8 +75,8 @@ function CardImages(props) {
         </div>
     ) : (
         <figure>
-            <a href={props.articleLink}>
-                <img src={props.images} className="w-full roundered-xl" /></a>
+            <img src={props.images} className="w-max roundered-xl" alt={props.unique}
+                key={props.key} />
         </figure>
     )
 }

@@ -153,8 +153,6 @@ const ArticleForm = () => {
       fetch('/api/articles', requestOptions)
         .then(response => response.json())
         .then((data) => {
-          console.log(data.message);
-          console.log(data.article);
           //crer les images
           const id_article = data.article.id_article;
           const images = formData.images;
@@ -180,13 +178,12 @@ const ArticleForm = () => {
       <form className="w-full max-w-2xl rounded-lg p-6 shadow-lg" onSubmit={handleSubmit}>
 
         <h1 className="text-3xl font-semibold text-gray-700 mb-4">Créer un article</h1>
-        <p className="mb-4 text-gray-500">Remplissez le formulaire ci-dessous pour créer un articlez.</p>
+        <p className="mb-4 text-gray-500">Remplissez le formulaire ci-dessous pour créer un article.</p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Section à gauche */}
           <div className="col-span-1">
             <div className="mb-6">
-              <h2 className="text-xl font-bold mb-2">Informations de base requise</h2>
               <div className="flex flex-col mb-4">
                 <label className="mb-2 font-bold text-gray-700 text-sm">Nom de l'article</label>
                 <input
@@ -226,7 +223,6 @@ const ArticleForm = () => {
           {/* Section au milieu */}
           <div className="col-span-1">
             <div className="mb-6">
-              <h2 className="text-xl font-bold mb-2">Informations sur le produit</h2>
               <label className="mb-2 font-bold text-gray-700 text-sm">Catégorie</label>
               <select
                 name="categorie"
@@ -241,10 +237,11 @@ const ArticleForm = () => {
                 <option value="Veste">Veste</option>
                 <option value="Sweat">Sweat</option>
                 <option value="Chemise">Chemise</option>
-                <otion value="Blazer">Blazer</otion>
+                <option value="Blazer">Blazer</option>
+                <option value="Manteau">Manteau</option>
               </select>
 
-              <label className="mb-2 font-bold text-gray-700 text-sm">Catégorie</label>
+              <label className="mb-2 font-bold text-gray-700 text-sm">Sexe</label>
               <select
                 name="genre"
                 value={formData.genre}
@@ -277,6 +274,7 @@ const ArticleForm = () => {
                 <option value="Rose">Rose</option>
                 <option value="Violet">Violet</option>
                 <option value="Marron">Marron</option>
+                <option value="Beige">Beige</option>
               </select>
               <label className="mb-2 font-bold text-gray-700 text-sm">Marque</label>
               <select
@@ -287,6 +285,7 @@ const ArticleForm = () => {
                 className="border border-gray-300 rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full"
               >
                 <option value="Nike">Nike</option>
+                <option value="Project X Paris">Project X Paris</option>
                 <option value="Ralph Lauren">Ralph Lauren</option>
                 <option value="Adidas">Adidas</option>
                 <option value="Puma">Puma</option>
@@ -301,6 +300,7 @@ const ArticleForm = () => {
                 <option value="Dr. Martens">Dr. Martens</option>
                 <option value="Le Coq Sportif">Le Coq Sportif</option>
                 <option value="Skechers">Skechers</option>
+                <option value="IKKS">IKKS</option>
                 <option value="Saucony">Saucony</option>
                 <option value="DC Shoes">DC Shoes</option>
                 <option value="Lacoste">Lacoste</option>
@@ -320,7 +320,6 @@ const ArticleForm = () => {
           {/* Section à droite */}
           <div className="col-span-1">
             <div className="mb-6">
-              <h2 className="text-xl font-bold mb-2">Tailles disponibles en stock</h2>
               <div className="flex flex-col mb-4">
                 <label className="mb-2 font-bold text-gray-700 text-sm">Taille XS</label>
                 <input
