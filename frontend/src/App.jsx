@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import GridCards from './GridCards'
 import Navbar from './Navbar'
 import './index.css'
-import Article from './Article';
+import Article from './Article'
+import Footer from './Footer'
 
 function Formulaire() {
   return <h1>Formulaire</h1>;
@@ -51,22 +52,27 @@ function App() {
 
   return (
     <>
-      <Router>
-        <Navbar categories={categories} onSearch={(searchText) => setSearchText(searchText)} />
-        <Routes>
-          <Route path="/articles" element={<GridCards searchText={searchText} />} />
-          <Route path="/homme" element={<GridCards gender="Homme" searchText={searchText} />} />
-          <Route path="/femme" element={<GridCards gender="Femme" searchText={searchText} />} />
-          <Route path="/formulaire" element={<Formulaire />} />
-        </Routes>
-      </Router>
-      {/* <Article
+      <div className=''>
+        <Router>
+          <Navbar categories={categories} onSearch={(searchText) => setSearchText(searchText)} />
+          <Routes>
+            <Route path="/articles" element={<GridCards searchText={searchText} />} />
+            <Route path="/homme" element={<GridCards gender="Homme" searchText={searchText} />} />
+            <Route path="/femme" element={<GridCards gender="Femme" searchText={searchText} />} />
+            <Route path="/formulaire" element={<Formulaire />} />
+          </Routes>
+        </Router>
+
+        {/* <Article
         nameArticle={articleExample.nom_article}
         typeArticle={articleExample.categorie}
         price={articleExample.prix_article + " €"}
         images={articleExample.images}
         description={articleExample.description_article}
       /> */}
+        <Footer />
+      </div>
+
     </>
   )
 }
