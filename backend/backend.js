@@ -13,8 +13,6 @@ app.use(express.urlencoded({ limit: '50mb' }));
 const port = 3000;
 const prisma = new PrismaClient();
 
-const sessiontable = [];
-
 async function createFolder(nameFolder) {
    // Obtenir le chemin du répertoire du module actuel
    const __filename = fileURLToPath(import.meta.url);
@@ -47,6 +45,11 @@ async function createArticle(req, res) {
    const categorie = req.body.categorie;
    const couleur = req.body.couleur;
    const genre = req.body.genre;
+
+   //clear temp folder du vendeur
+   const __filename = fileURLToPath(import.meta.url);
+   const __dirname = path.dirname(__filename);
+   fs.rmdirSync(path.join(__dirname, 'temp/' + id_vendeur), { recursive: true });
 
    //si le nombre n'est pas à virgule rajouter un .00
    if (prix_article % 1 === 0) {
@@ -185,6 +188,59 @@ async function createUser(req, res) {
    } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Erreur' });
+   }
+}
+
+async function saveImagesTemp(size, body, res) {
+
+   // body data
+   const { data, extension, id_user } = body;
+
+   //generate random file name
+   const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+
+   // créer un dossier temporaire pour l'utilisateur s'il n'existe pas
+   createFolder("temp" + "/" + id_user);
+
+   if (size === "small") {
+
+      // Revenir en arrière : convertir la chaîne JSON en tableau JavaScript
+      const uint8ArrayJS2 = JSON.parse(data);
+
+      // Reconvertir le tableau JavaScript en Uint8Array
+      const uint8Array2 = new Uint8Array(uint8ArrayJS2);
+
+      // Reconvertir l'Uint8Array en Buffer
+      const buffer2 = Buffer.from(uint8Array2);
+
+      const __filename = fileURLToPath(import.meta.url);
+      const __dirname = path.dirname(__filename);
+
+      //generate random file name
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+
+      // Écrire l'image dans un fichier
+      fs.writeFileSync(path.join(__dirname, 'temp/' + id_user + "/" + uniqueSuffix + "." + extension), buffer2);
+
+      res.status(200).json({ message: '/api/temp/' + id_user + "/" + uniqueSuffix + "." + extension });
+
+   } else if (size === "big") {
+      const { data, chunk, totalChunks, extension, id_user } = body;
+
+      const tempFileName = "temp/" + id_user + "/" + uniqueSuffix + "." + extension;
+
+      // Convertissez le chunk JSON en Uint8Array
+      const uint8Array = new Uint8Array(JSON.parse(data));
+
+      // Ajoutez le chunk au fichier en cours de création
+      fs.writeFileSync(tempFileName, uint8Array, { flag: 'a' });
+
+      if (chunk === totalChunks) {
+         res.status(200).json({ message: '/api/temp/' + id_user + "/" + uniqueSuffix + "." + extension });
+      } else {
+         // Il reste encore des chunks à recevoir
+         res.json({ message: 'Chunk reçu' });
+      }
    }
 }
 
@@ -384,6 +440,15 @@ app.get('/api/images/:id_article', async (req, res) => {
 }
 );
 
+//afficher l'image temporaire avec l'id de l'utilisateur et le nom du fichier
+app.get('/api/temp/:id_user/:file', async (req, res) => {
+   const file = req.params.file;
+
+   const __filename = fileURLToPath(import.meta.url);
+   const __dirname = path.dirname(__filename);
+   res.sendFile(path.join(__dirname, 'temp/' + req.params.id_user + "/" + file));
+});
+
 // afficher l'image avec l'id de l'entreprise, l'id de l'utilisateur et l'id de l'article
 app.get('/api/images/:id_entreprise/:id_user/:id_article/:file', async (req, res) => {
    const id_article = parseInt(req.params.id_article);
@@ -414,6 +479,26 @@ app.get('/api/images/:id_entreprise/:id_user/:id_article/:file', async (req, res
 // créer un article
 app.post('/api/articles', async (req, res) => {
    createArticle(req, res);
+});
+
+//stocker des images temporaires
+app.post('/api/temp', async (req, res) => {
+   //creer le dossier temporaire s'il n'existe pas
+   createFolder("temp");
+   saveImagesTemp(req.body.size, req.body, res);
+}
+);
+
+app.delete('/api/temp', async (req, res) => {
+   const id_user = req.body.id_user;
+
+   const __filename = fileURLToPath(import.meta.url);
+   const __dirname = path.dirname(__filename);
+
+   //supprimer le dossier temporaire de l'utilisateur
+   fs.rmdirSync(path.join(__dirname, 'temp/' + id_user), { recursive: true });
+
+   res.status(200).json({ message: 'Dossier temporaire supprimé' });
 });
 
 // créer un utilisateur

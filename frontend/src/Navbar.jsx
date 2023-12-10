@@ -4,7 +4,6 @@ import SearchBar from './SearchBar';
 
 function Navbar(props) {
 
-
   const categories = () => {
     let tempCategories = []
     for (let i = 0; i < props.categories.length; i++) {

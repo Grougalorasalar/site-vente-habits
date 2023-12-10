@@ -3,14 +3,10 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import GridCards from './GridCards'
 import Navbar from './Navbar'
 import './index.css'
-import Article from './Article'
+import PreviewForm from './PreviewForm'
 import Footer from './Footer'
 import Cart from './Cart'
 import { nbItemsInBasket, calcTotalPrice } from './Utils'
-
-function Formulaire() {
-  return <h1>Formulaire</h1>;
-}
 
 function App() {
   const [searchText, setSearchText] = useState('');
@@ -61,7 +57,7 @@ function App() {
           <Route path="/articles" element={<GridCards searchText={searchText} />} />
           <Route path="/homme" element={<GridCards gender="Homme" searchText={searchText} />} />
           <Route path="/femme" element={<GridCards gender="Femme" searchText={searchText} />} />
-          <Route path="/formulaire" element={<Formulaire />} />
+          <Route path="/formulaire" element={<PreviewForm />} />
           <Route path="/cart" element={<Cart totalPrice={totalPrice} setBasket={setBasket} setTotalPrice={setTotalPrice} />} />
         </Routes>
       </Router>
