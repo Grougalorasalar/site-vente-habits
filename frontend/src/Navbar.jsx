@@ -21,48 +21,6 @@ function Navbar(props) {
 
   const [searchText, setSearchText] = useState('');
 
-  const obj = [
-    {
-      "id": 1,
-      "nom_article": "Nike Sportswear Tech Fleece",
-      "prix_article": 83.99,
-      "description_article": "Chaleur et style en toute simplicité : découvrez le sweat à capuche Nike Sportswear Tech Fleece.",
-      "id_vendeur": 1,
-      "marque": "Nike",
-      "genre": "Homme",
-      "categorie": "Sweat",
-      "couleur": "Noir",
-      "quantity": 1
-    },
-    {
-      "id": 2,
-      "nom_article": " Blazer en sergé de laine ",
-      "prix_article": 449.99,
-      "description_article": "Blazers d'inspiration traditionnelle et silhouettes fluides et libres évoquent le romantisme de l'automne à la campagne",
-      "id_vendeur": 1,
-      "marque": "Ralph Lauren",
-      "genre": "Femme",
-      "categorie": "T-shirt",
-      "couleur": "Gris",
-      "quantity": 2
-    }]
-
-  function totalPrice(basket) {
-    var total = 0;
-    basket.forEach((element) => {
-      total = total + element.quantity * element.prix_article
-    })
-    return total;
-  }
-
-  function nbItemsInBasket() {
-    if (Array.isArray(JSON.parse(localStorage.getItem("basket")))) {
-      return JSON.parse(localStorage.getItem("basket")).length
-    } else {
-      return 0
-    }
-  }
-
   function isPlurial(nb) {
     return nb > 1 ? "s" : "";
   }
@@ -76,7 +34,7 @@ function Navbar(props) {
   return (
     <div className='flex flex-col drawer-content md:px-16 md:pt-6 md:relative md:max-w-screen-xl md:mx-auto'>
       <div className="w-full navbar">
-        <div className="flex-none md:hidden">
+        {/* <div className="flex-none md:hidden">
           <label
             htmlFor="my-drawer-3"
             className="btn btn-square btn-ghost"
@@ -85,13 +43,13 @@ function Navbar(props) {
               //   toggleDrawer(true);
             }}
           >
-            {/* <ReactSVG src={menuPath} /> */}
+
             <svg width="16" height="15" xmlns="http://www.w3.org/2000/svg"><path d="M16 12v3H0v-3h16Zm0-6v3H0V6h16Zm0-6v3H0V0h16Z" fill="#69707D" fillRule="evenodd" /></svg>
           </label>
-        </div>
-        <div className="btn btn-ghost normal-case flex items-center justify-start px-10">
+        </div> */}
+        <a className="normal-case flex items-center justify-start px-10 hover:cursor-pointer" href="/">
           {/* <ReactSVG src={logoPath} /> */}
-          <svg width="100%" height="100%" viewBox="0 0 800 600" version="1.1" xmlns="http://www.w3.org/2000/svg" fillRule='evenodd' style={{ clipRule: "evenodd", strokeMiterlimit: "1.5" }}>
+          <svg className="max-h-16" width="100%" height="100%" viewBox="0 0 800 600" version="1.1" xmlns="http://www.w3.org/2000/svg" fillRule='evenodd' style={{ clipRule: "evenodd", strokeMiterlimit: "1.5" }}>
             <path d="M163.027,346.374l37.1,-92.748l18.549,-0l37.038,92.686l-19.725,0.062l-5.564,-14.221l-42.047,-0l-5.564,14.221l-19.787,0Zm46.869,-68.015l-14.098,35.244l27.825,0l-13.727,-35.244Z" fillRule='nonzero' />
             <path d="M269.75,253.626l-0,92.748l68.016,0l-0,-17.313l-49.466,0l-0,-75.435l-18.55,-0Z" fillRule="nonzero" />
             <path d="M394.713,346.374c-13.191,0 -24.217,-4.441 -33.08,-13.325c-8.863,-8.883 -13.294,-19.899 -13.294,-33.049c-0,-13.191 4.431,-24.218 13.294,-33.08c8.863,-8.863 19.889,-13.294 33.08,-13.294c13.191,-0 24.218,4.431 33.081,13.294c8.862,8.862 13.294,19.889 13.294,33.08c-0,13.191 -4.432,24.218 -13.294,33.08c-8.863,8.863 -19.89,13.294 -33.081,13.294Zm0.062,-17.313c8.203,0 14.881,-2.782 20.034,-8.347c5.153,-5.565 7.729,-12.47 7.729,-20.714c-0,-8.244 -2.576,-15.149 -7.729,-20.714c-5.153,-5.565 -11.872,-8.347 -20.158,-8.347c-8.203,-0 -14.881,2.782 -20.033,8.347c-5.153,5.565 -7.729,12.47 -7.729,20.714c-0,8.244 2.576,15.149 7.729,20.714c5.152,5.565 11.872,8.347 20.157,8.347Z" fillRule='nonzero' />
@@ -99,7 +57,7 @@ function Navbar(props) {
             <path d="M590.598,346.374c-13.19,0 -24.217,-4.441 -33.08,-13.325c-8.863,-8.883 -13.294,-19.899 -13.294,-33.049c0,-13.191 4.431,-24.218 13.294,-33.08c8.863,-8.863 19.89,-13.294 33.08,-13.294c13.191,-0 24.218,4.431 33.081,13.294c8.863,8.862 13.294,19.889 13.294,33.08c-0,13.191 -4.431,24.218 -13.294,33.08c-8.863,8.863 -19.89,13.294 -33.081,13.294Zm0.062,-17.313c8.203,0 14.881,-2.782 20.034,-8.347c5.153,-5.565 7.729,-12.47 7.729,-20.714c0,-8.244 -2.576,-15.149 -7.729,-20.714c-5.153,-5.565 -11.872,-8.347 -20.157,-8.347c-8.203,-0 -14.881,2.782 -20.034,8.347c-5.153,5.565 -7.729,12.47 -7.729,20.714c-0,8.244 2.576,15.149 7.729,20.714c5.153,5.565 11.872,8.347 20.157,8.347Z" fillRule='nonzero' />
             <rect x="103.352" y="190.967" width="593.295" height="218.065" style={{ fill: "none", stroke: "#000", strokeWidth: "17px" }} />
           </svg>
-        </div>
+        </a>
         <div className="flex-none hidden md:block">
           <ul className="menu menu-horizontal">
             {categories()}
