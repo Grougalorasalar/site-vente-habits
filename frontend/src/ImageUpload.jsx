@@ -19,7 +19,7 @@ function ImageUpload({ onImageUpload }) {
     setResponseClassname('text-green-500 mt-2');
     // mettre à jour le className du bouton
     setButtonClassName('bg-green-500 text-white px-4 py-2 rounded font-medium');
-    if(tabImages > 1) {
+    if (tabImages.length > 1) {
       setResponseMessage(`${tabImages.length} images téléchargées.`);
     } else {
       setResponseMessage(`${tabImages.length} image téléchargée.`);
@@ -38,17 +38,17 @@ function ImageUpload({ onImageUpload }) {
         />
       </div>
       <div className="flex items-center justify-center mb-4 px-2 py-3">
-      <button
-        onClick={handleUpload}
-        className={buttonClassName}
-      >
-        Upload Images
-      </button>
-      <div className="flex items-center justify-center px-2 py-3">
-      {responseMessage && (
-        <p className={responseClassname}>{responseMessage}</p>
-      )}
-      </div>
+        <button
+          onClick={handleUpload}
+          className={buttonClassName}
+        >
+          Upload Images
+        </button>
+        <div className="flex items-center justify-center px-2 py-3">
+          {responseMessage && (
+            <p className={responseClassname}>{responseMessage}</p>
+          )}
+        </div>
       </div>
     </div>
   );

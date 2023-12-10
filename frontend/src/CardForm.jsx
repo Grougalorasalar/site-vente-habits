@@ -3,53 +3,52 @@ import CardImages from './CardImages';
 
 function CardForm(props) {
     const isEditing = props.editing;
-    const [editedName, setEditedName] = useState("Product Name");
-    const [editedType, setEditedType] = useState("Product Type");
-    const [editedDescription, setEditedDescription] = useState("Lorem ipsum dolor sit amet consectetur adipisicing elit");
-    const [editedPrice, setEditedPrice] = useState("$149");
-    const [showImageForm, setShowImageForm] = useState(false); // État pour afficher/masquer le formulaire d'images
+
+    const [previewData, setPreviewData] = useState({
+        nomArticle: props.formData.nomArticle,
+        typeArticle: props.formData.typeArticle,
+        prix: props.formData.prix,
+        description: props.formData.description,
+        typeArticle: props.formData.typeArticle,
+        images: props.formData.urlImages,
+    });
 
     useEffect(() => {
-        if (isEditing) {
-            props.onChange({
-                editedName,
-                editedType,
-                editedDescription,
-                editedPrice,
-            });
-        }
-    }, [editedName, editedType, editedDescription, editedPrice]);
+        props.onChange(previewData);
+    }, [previewData, props]);
 
     return (
         <div className="group card glass w-72 bg-base-100 shadow-xl rounded-xl">
-            <CardImages images={props.images} unique={props.nameArticle} articleLink={props.articleLink} />
+            <CardImages images={previewData.images} unique={previewData.nomArticle} />
             <div className='card-body'>
                 <span className="badge ">{isEditing ? (
                     <select
-                        value={editedType}
-                        onChange={(e) => setEditedType(e.target.value)}
+                        value={previewData.typeArticle}
+                        onChange={(e) => setPreviewData({ ...previewData, typeArticle: e.target.value })}
                         className="input w-21 h-5 origin-top input-bordered"
                     >
                         <option value="t-shirt">T-shirt</option>
                         <option value="pantalon">Pantalon</option>
                         <option value="sweat">Sweat</option>
                         <option value="casquette">Casquette</option>
+                        <option value="chaussure">Chaussure</option>
+                        <option value="autre">Autre</option>
                     </select>
                 ) : (
-                    props.typeArticle || "Product Type"
+                    previewData.typeArticle || "Product Type"
                 )}
                 </span>
                 <h2 className="card-title">
                     {isEditing ? (
                         <input
                             type="text"
-                            value={editedName}
+                            value={previewData.nomArticle}
                             placeholder="Product Name"
                             className="input input-bordered w-full max-w-xs"
-                            onChange={(e) => setEditedName(e.target.value)}
+                            onChange={(e) => setPreviewData({ ...previewData, nomArticle: e.target.value })}
                         />
                     ) : (
-                        props.nameArticle || "Product Name"
+                        props.formData.nomArticle || "Product Name"
                     )}
                     <div className={`badge badge-secondary ${isEditing ? 'text-xs' : 'text-base'}`}>
                         NEW
@@ -59,23 +58,23 @@ function CardForm(props) {
                     <textarea
                         placeholder="Description de l'article"
                         className="input input-bordered border"
-                        value={editedDescription}
-                        onChange={(e) => setEditedDescription(e.target.value)}
+                        value={previewData.description}
+                        onChange={(e) => setPreviewData({ ...previewData, description: e.target.value })}
                     />
                 ) : (
-                    props.description || "Lorem ipsum dolor sit amet consectetur adipisicing elit"
+                    props.formData.description || "Lorem ipsum dolor sit amet consectetur adipisicing elit"
                 )}
                 </p>
                 <p className='text-left font-semibold flex'>{isEditing ? (
                     <input
                         type="text"
-                        value={editedPrice}
+                        value={previewData.prix}
                         placeholder="$149"
-                        className="input border"
-                        onChange={(e) => setEditedPrice(e.target.value)}
+                        className="input input-bordered border"
+                        onChange={(e) => setPreviewData({ ...previewData, prix: e.target.value })}
                     />
                 ) : (
-                    props.price || "$149"
+                    props.formData.prix || "$149"
                 )}
                 </p>
             </div>

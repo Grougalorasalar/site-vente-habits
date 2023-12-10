@@ -1,19 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CardForm from './CardForm';
 import InfoForm from './InfoForm';
 
 const PreviewForm = () => {
     const [isEditing, setIsEditing] = useState(false);
-    const [previewImages, setPreviewImages] = useState(["https://www.elbuscon.es/static/img/no-preview.jpg", "https://img01.ztat.net/article/spp-media-p1/31d7b0153b8443c8bd7d983d43aea688/73605f1fce664a769b5d003e6f289b8e.jpg?imwidth=1800"]);
-    const [previewNameArticle, setPreviewNameArticle] = useState('');
-    const [previewPrice, setPreviewPrice] = useState('');
-    const [previewDescription, setPreviewDescription] = useState('');
-    const [previewTypeArticle, setPreviewTypeArticle] = useState('');
-    const [previewGender, setPreviewGender] = useState('');
-    const [previewBrand, setPreviewBrand] = useState('');
+
     let key = 0;
 
+    const [formData, setFormData] = useState({
+        gender: 'Homme',
+        couleur: 'Blanc',
+        marque: 'Nike',
+        taille_xs: '0',
+        taille_s: '0',
+        taille_m: '0',
+        taille_l: '0',
+        taille_xl: '0',
+        urlImages: ["https://www.elbuscon.es/static/img/no-preview.jpg", "https://www.elbuscon.es/static/img/no-preview.jpg", "https://www.elbuscon.es/static/img/no-preview.jpg"],
+        nomArticle: '',
+        prix: '',
+        description: '',
+        typeArticle: '',
+    });
+
     const handleEditClick = () => {
+        //wait props update
+        console.log("edit");
         setIsEditing(true);
         // timeout to wait for the DOM to update
         setTimeout(() => {
@@ -29,26 +41,42 @@ const PreviewForm = () => {
     }
 
     const handleSaveClick = () => {
+        console.log("save");
+        setIsEditing(false);
+    };
+
+    const handleCreateArticle = () => {
+        console.log("create");
+        console.log(formData);
         setIsEditing(false);
     };
 
     const handleChange = (data) => {
-        const dataToStateMap = {
-            editedImages: setPreviewImages,
-            editedName: setPreviewNameArticle,
-            editedType: setPreviewTypeArticle,
-            editedDescription: setPreviewDescription,
-            editedPrice: setPreviewPrice,
-            editedGender: setPreviewGender,
-            editedBrand: setPreviewBrand,
-        };
-
-        for (const key in data) {
-            if (key in dataToStateMap) {
-                dataToStateMap[key](data[key]);
-            }
-        }
+        formData.nomArticle = data.nomArticle;
+        formData.typeArticle = data.typeArticle;
+        formData.prix = data.prix;
+        formData.description = data.description;
+        formData.images = data.images;
     };
+
+    const handleInfoChange = (data) => {
+        formData.urlImages = data.urlImages;
+        // update tabTailles
+        formData.taille_xs = data.taille_xs;
+        formData.taille_s = data.taille_s;
+        formData.taille_m = data.taille_m;
+        formData.taille_l = data.taille_l;
+        formData.taille_xl = data.taille_xl;
+        formData.couleur = data.couleur;
+        formData.marque = data.marque;
+        formData.gender = data.gender;
+    };
+
+    useEffect(() => {
+
+        setFormData(formData);
+
+    }, [formData]);
 
     return (
         <div className="flex justify-center">
@@ -59,7 +87,7 @@ const PreviewForm = () => {
                             <input className="join-item btn" type="radio" name="options" aria-label="Editer"
                                 onClick={handleEditClick}
                             />
-                            <input className="join-item btn" type="radio" name="options" aria-label="Sauvegarder"
+                            <input className="join-item btn" type="radio" name="options" aria-label="Preview"
                                 onClick={handleSaveClick}
                             />
                         </div>
@@ -67,17 +95,15 @@ const PreviewForm = () => {
                     <div>
                         <CardForm
                             editing={isEditing}
-                            key={key++}
-                            images={previewImages}
-                            nameArticle={previewNameArticle}
-                            price={previewPrice}
-                            description={previewDescription}
-                            typeArticle={previewTypeArticle}
+                            formData={formData}
                             onChange={handleChange}
                         />
                     </div>
                     <div className="mx-20 mt-20">
-                        <InfoForm />
+                        <InfoForm
+                            formData={formData}
+                            onChange={handleInfoChange}
+                        />
                     </div>
                 </div>
             ) : (
@@ -87,26 +113,23 @@ const PreviewForm = () => {
                             <input className="join-item btn" type="radio" name="options" aria-label="Editer"
                                 onClick={handleEditClick}
                             />
-                            <input className="join-item btn" type="radio" name="options" aria-label="Sauvegarder"
+                            <input className="join-item btn" type="radio" name="options" aria-label="Preview"
                                 onClick={handleSaveClick}
                             />
                         </div>
                     </div>
                     <CardForm
                         editing={isEditing}
-                        key={key++}
-                        images={previewImages}
-                        nameArticle={previewNameArticle}
-                        price={previewPrice}
-                        description={previewDescription}
-                        typeArticle={previewTypeArticle}
+                        formData={formData}
                         onChange={handleChange}
+                        className="w-1/2"
                     />
+
                     <div className="flex justify-center">
                         <div className="flex justify-evenly mx-20 mt-20">
                             <div className='pl-12'>
                                 <input className="join-item btn" type="radio" name="options" aria-label="Publier"
-                                    onClick={handleSaveClick}
+                                    onClick={handleCreateArticle}
                                 />
                             </div>
                         </div>
