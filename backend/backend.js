@@ -48,6 +48,11 @@ async function createArticle(req, res) {
    const couleur = req.body.couleur;
    const genre = req.body.genre;
 
+   //clear temp folder du vendeur
+   const __filename = fileURLToPath(import.meta.url);
+   const __dirname = path.dirname(__filename);
+   fs.rmdirSync(path.join(__dirname, 'temp/' + id_vendeur), { recursive: true });
+
    //si le nombre n'est pas à virgule rajouter un .00
    if (prix_article % 1 === 0) {
       prix_article = prix_article + ".00";
@@ -190,13 +195,17 @@ async function createUser(req, res) {
 
 async function saveImagesTemp(size, body, res) {
 
+   // body data
+   const { data, extension, id_user } = body;
+
    //generate random file name
    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
 
-   if (size === "small") {
-      const { data, extension, id_user } = body;
+   // créer un dossier temporaire pour l'utilisateur s'il n'existe pas
+   createFolder("temp" + "/" + id_user);
 
-      createFolder("temp" + "/" + id_user);
+   if (size === "small") {
+
       // Revenir en arrière : convertir la chaîne JSON en tableau JavaScript
       const uint8ArrayJS2 = JSON.parse(data);
 
@@ -476,6 +485,8 @@ app.post('/api/articles', async (req, res) => {
 
 //stocker des images temporaires
 app.post('/api/temp', async (req, res) => {
+   //creer le dossier temporaire s'il n'existe pas
+   createFolder("temp");
    saveImagesTemp(req.body.size, req.body, res);
 }
 );

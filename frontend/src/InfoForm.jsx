@@ -14,16 +14,18 @@ function InfoForm(props) {
         taille_l: props.formData.taille_l,
         taille_xl: props.formData.taille_xl,
         urlImages: props.formData.urlImages,
+        images: props.formData.filesImages,
     });
 
     useEffect(() => {
         props.onChange(previewData);
-    }, [previewData, props]);
+    }, [previewData]);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleChange = (e) => {
         setPreviewData({ ...previewData, [e.target.name]: e.target.value });
+        props.onChange(previewData);
     };
 
     const openModal = () => {
@@ -47,20 +49,35 @@ function InfoForm(props) {
         })
     }
 
-    const handleImageUpload = (uploadImages) => {
-        setPreviewData({ ...previewData, urlImages: [] });
-        const urlTabImages = []
+    const handleImageUpload = async (uploadImages) => {
+        const urlTabImages = [];
         const tabImages = Array.from(uploadImages);
         const chunkSize = 5000000;
+
+        // send small images
         tabImages.forEach((image) => {
             if (image.size < chunkSize) {
                 sendSmallImage(image, urlTabImages);
-            } else {
-                sendLargeImage(image, urlTabImages);
+            }
+        });
+
+        // send large images
+        for (const image of tabImages) {
+            if (image.size > chunkSize) {
+                await sendLargeImage(image, chunkSize, urlTabImages);
             }
         }
-        );
-        setPreviewData({ ...previewData, urlImages: urlTabImages });
+
+        // wait for all images to be sent
+        await new Promise((resolve) => {
+            setTimeout(() => {
+                resolve();
+            }, 500);
+        });
+
+        setPreviewData({ ...previewData, urlImages: urlTabImages, images: tabImages });
+        //close modal
+        setIsModalOpen(false);
     };
 
     function sendSmallImage(image, tabImages) {
@@ -96,6 +113,7 @@ function InfoForm(props) {
             })
                 .then((response) => response.json())
                 .then((data) => {
+                    // push new image to formData images
                     tabImages.push(data.message);
                 });
         }

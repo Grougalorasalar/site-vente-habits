@@ -9,18 +9,15 @@ function CardForm(props) {
         typeArticle: props.formData.typeArticle,
         prix: props.formData.prix,
         description: props.formData.description,
-        typeArticle: props.formData.typeArticle,
-        images: props.formData.urlImages,
     });
 
     useEffect(() => {
-        console.log(previewData);
         props.onChange(previewData);
-    }, [previewData, props]);
+    }, [previewData]);
 
     return (
         <div className="group card glass w-72 bg-base-100 shadow-xl rounded-xl">
-            <CardImages images={previewData.images} unique={previewData.nomArticle} />
+            <CardImages images={props.formData.urlImages} unique={previewData.nomArticle} />
             <div className='card-body'>
                 <span className="badge ">{isEditing ? (
                     <select
@@ -51,9 +48,7 @@ function CardForm(props) {
                     ) : (
                         props.formData.nomArticle || "Product Name"
                     )}
-                    <div className={`badge badge-secondary ${isEditing ? 'text-xs' : 'text-base'}`}>
-                        NEW
-                    </div>
+
                 </h2>
                 <p>{isEditing ? (
                     <textarea
@@ -70,7 +65,7 @@ function CardForm(props) {
                     <input
                         type="text"
                         value={previewData.prix}
-                        placeholder="$149"
+                        placeholder="€149"
                         className="input input-bordered border"
                         onChange={(e) => setPreviewData({ ...previewData, prix: e.target.value })}
                     />

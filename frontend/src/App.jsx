@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import GridCards from './GridCards'
 import Navbar from './Navbar'
 import './index.css'
-import ArticleForm from './ArticleForm';
 import PreviewForm from './PreviewForm';
 
 function App() {
@@ -30,10 +29,6 @@ function App() {
     {
       "name": "Formulaire",
       "address": "/formulaire"
-    },
-    {
-      "name": "NewFormulaire",
-      "address": "/newformulaire"
     }
   ]
 
@@ -45,8 +40,7 @@ function App() {
           <Route path="/articles" element={<GridCards searchText={searchText} />} />
           <Route path="/homme" element={<GridCards gender="Homme" searchText={searchText} />} />
           <Route path="/femme" element={<GridCards gender="Femme" searchText={searchText} />} />
-          <Route path="/formulaire" element={<ArticleForm />} />
-          <Route path="/newformulaire" element={<PreviewForm />} />
+          <Route path="/formulaire" element={<PreviewForm />} />
         </Routes>
       </div>
     </Router>

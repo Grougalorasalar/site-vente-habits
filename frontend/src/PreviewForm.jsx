@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import CardForm from './CardForm';
 import InfoForm from './InfoForm';
 
@@ -18,12 +18,152 @@ const PreviewForm = () => {
         nomArticle: '',
         prix: '',
         description: '',
-        typeArticle: '',
+        typeArticle: 't-shirt',
+        images: undefined,
     });
 
+    const [responseMessagePublish, setResponseMessagePublish] = useState('');
+
+    function sendSmallImage(image, id_article) {
+        // Lancer la lecture du fichier
+        const fileReader = new FileReader();
+        fileReader.readAsArrayBuffer(image);
+
+        // Récupérer l'extension du fichier
+        const extension = image.name.split('.').pop();
+        fileReader.onload = async () => {
+            const arrayBuffer = fileReader.result;
+            const bytes = new Uint8Array(arrayBuffer);
+
+            // Convertir Uint8Array en un tableau JavaScript
+            const uint8ArrayJS = Array.from(bytes);
+
+            // Convertir le tableau JavaScript en une chaîne JSON
+            const json = JSON.stringify(uint8ArrayJS);
+
+            // Envoyer les données au serveur
+            const response = await fetch('/api/images', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "data": json,
+                    "extension": extension,
+                    "size": "small",
+                    "id_entreprise": 1,
+                    "id_user": 1,
+                    "id_article": id_article
+                }),
+            });
+        }
+    }
+
+    function sendLargeImage(image, chunkSize, id_article) {
+        const totalChunks = Math.ceil(image.size / chunkSize);
+        let currentChunk = 1;
+        let offset = 0;
+
+        function sendChunk() {
+            const fileReader = new FileReader();
+            const blob = image.slice(offset, offset + chunkSize);
+            offset += chunkSize;
+
+            fileReader.onload = async () => {
+                const arrayBuffer = fileReader.result;
+                const bytes = new Uint8Array(arrayBuffer);
+                const uint8ArrayJS = Array.from(bytes);
+                const json = JSON.stringify(uint8ArrayJS);
+
+                const response = await fetch('/api/images', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        "data": json,
+                        "chunk": currentChunk,
+                        "totalChunks": totalChunks,
+                        "extension": image.name.split('.').pop(),
+                        "size": "big",
+                        "id_entreprise": 1,
+                        "id_user": 1,
+                        "id_article": id_article
+                    }),
+                });
+
+                currentChunk++;
+
+                if (currentChunk <= totalChunks) {
+                    sendChunk(); // Envoyer le chunk suivant
+                }
+            };
+
+            fileReader.readAsArrayBuffer(blob);
+        }
+
+        sendChunk();
+    }
+
+    const handleSubmit = () => {
+
+        // ajouter toutes les tailles dans un dictionnaire
+        const dicTailles = {
+            "XS": formData.taille_xs,
+            "S": formData.taille_s,
+            "M": formData.taille_m,
+            "L": formData.taille_l,
+            "XL": formData.taille_xl,
+        };
+
+
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            "nom_article": formData.nomArticle,
+            "prix_article": formData.prix,
+            "description_article": formData.description,
+            "id_vendeur": 1,
+            "tailles": dicTailles,
+            "categorie": formData.typeArticle,
+            "genre": formData.gender,
+            "couleur": formData.couleur,
+            "marque": formData.marque,
+        });
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        try {
+            fetch('/api/articles', requestOptions)
+                .then(response => response.json())
+                .then((data) => {
+                    //crer les images
+                    const id_article = data.article.id_article;
+                    const images = formData.images;
+                    const tabImages = Array.from(images);
+                    const chunkSize = 5000000;
+                    tabImages.forEach((image) => {
+                        if (image.size < chunkSize) {
+                            sendSmallImage(image, id_article);
+                        } else {
+                            sendLargeImage(image, id_article);
+                        }
+                    });
+                })
+                .catch(error => console.log('error', error));
+
+        } catch (error) {
+            console.error('Erreur réseau :', error);
+        }
+    };
+
     const handleEditClick = () => {
-        //wait props update
-        console.log("edit");
         setIsEditing(true);
         // timeout to wait for the DOM to update
         setTimeout(() => {
@@ -39,33 +179,35 @@ const PreviewForm = () => {
     }
 
     const handleSaveClick = () => {
-        console.log("save");
         setIsEditing(false);
     };
 
     const handleCreateArticle = () => {
-        console.log("create");
-        console.log(formData);
+        //evaluer si le formulaire est valide
+        if (formData.nomArticle === '' || formData.prix === '' || formData.description === '' || formData.typeArticle === '') {
+            setResponseMessagePublish('Veuillez remplir tous les champs');
+            return;
+        }
+        //evaluer si au moins la variable images est remplie
+        if (formData.images === undefined) {
+            setResponseMessagePublish('Veuillez ajouter au moins une image');
+            return;
+        }
+        if (formData.taille_xs === '0' && formData.taille_s === '0' && formData.taille_m === '0' && formData.taille_l === '0' && formData.taille_xl === '0') {
+            setResponseMessagePublish('Veuillez ajouter au moins une taille');
+            return;
+        }
+        handleSubmit();
+        setResponseMessagePublish('Article publié');
         setIsEditing(false);
     };
 
     const handleChange = (data) => {
-        formData.nomArticle = data.nomArticle;
-        formData.typeArticle = data.typeArticle;
-        formData.prix = data.prix;
-        formData.description = data.description;
+        setFormData({ ...formData, ...data });
     };
 
-    const handleInfoChange = (data) => {
-        formData.urlImages = data.urlImages;
-        formData.taille_xs = data.taille_xs;
-        formData.taille_s = data.taille_s;
-        formData.taille_m = data.taille_m;
-        formData.taille_l = data.taille_l;
-        formData.taille_xl = data.taille_xl;
-        formData.couleur = data.couleur;
-        formData.marque = data.marque;
-        formData.gender = data.gender;
+    const handleInfoChange = async (data) => {
+        setFormData({ ...formData, ...data });
     };
 
     return (
@@ -121,6 +263,10 @@ const PreviewForm = () => {
                                 <input className="join-item btn" type="radio" name="options" aria-label="Publier"
                                     onClick={handleCreateArticle}
                                 />
+
+                            </div>
+                            <div className='pl-12'>
+                                {responseMessagePublish}
                             </div>
                         </div>
                     </div>
