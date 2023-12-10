@@ -1,42 +1,84 @@
-import React, { useState } from 'react'
-import Message from './Message'
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import GridCards from './GridCards'
+import Navbar from './Navbar'
+import './index.css'
+import Article from './Article'
+import Footer from './Footer'
+import Cart from './Cart'
+import { nbItemsInBasket, calcTotalPrice } from './Utils'
 
-function Counter() {
-   const [count, setCount] = useState(0)
-
-   const increment = () => {
-      setCount(count + 1)
-   }
-
-   const decrement = () => {
-      setCount(count - 1)
-   }
-
-   return (
-      <div className="m-2">
-         <div className="max-w-sm rounded overflow-hidden shadow-lg">
-            <img className="w-full" src="https://placekitten.com/200/100" />
-            <div className="px-6 py-4">
-               <div className="font-bold text-xl mb-2">Compteur</div>
-               <p className="text-gray-700 text-5xl">
-                  {count}
-               </p>
-            </div>
-            <div className="px-6 pt-4 pb-2">
-               <button type="button" onClick={increment} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                  Incrémenter
-               </button>
-               <button type="button" onClick={decrement} className="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                  Décrémenter
-               </button>
-            </div>
-         </div>
-         <div className="m-2">
-          <Message />
-      </div>
-      </div>
-
-   )
+function Formulaire() {
+  return <h1>Formulaire</h1>;
 }
 
-export default Counter
+function App() {
+  const [searchText, setSearchText] = useState('');
+  const [basket, setBasket] = useState(nbItemsInBasket());
+  const [totalPrice, setTotalPrice] = useState(calcTotalPrice());
+
+  const categories = [
+    {
+      "name": "Articles",
+      "address": "/articles"
+    },
+    {
+      "name": "Homme",
+      "address": "/homme"
+    },
+    {
+      "name": "Femme",
+      "address": "/femme"
+    },
+    {
+      "name": "Formulaire",
+      "address": "/formulaire"
+    }
+  ]
+
+  const articleExample = {
+    "id": 1,
+    "nom_article": "Nike Sportswear Tech Fleece",
+    "prix_article": 83.99,
+    "description_article": "Chaleur et style en toute simplicité : découvrez le sweat à capuche Nike Sportswear Tech Fleece.",
+    "id_vendeur": 1,
+    "marque": "Nike",
+    "genre": "Homme",
+    "categorie": "Sweat",
+    "couleur": "Noir",
+    "images": [
+      "/api/images/1/1/1/1698862241230-104166277.png",
+      "/api/images/1/1/1/1698862241237-734167684.png",
+      "/api/images/1/1/1/1698862241255-699973711.jpg"
+    ]
+  };
+
+  return (
+    <>
+      <Router>
+        <Navbar categories={categories} basket={basket} totalPrice={totalPrice} onSearch={(searchText) => setSearchText(searchText)} />
+        <Routes>
+          <Route path="/articles" element={<GridCards searchText={searchText} />} />
+          <Route path="/homme" element={<GridCards gender="Homme" searchText={searchText} />} />
+          <Route path="/femme" element={<GridCards gender="Femme" searchText={searchText} />} />
+          <Route path="/formulaire" element={<Formulaire />} />
+          <Route path="/cart" element={<Cart totalPrice={totalPrice} />} />
+        </Routes>
+      </Router>
+
+      {/* <Article
+        id={articleExample.id}
+        nameArticle={articleExample.nom_article}
+        typeArticle={articleExample.categorie}
+        price={articleExample.prix_article + " €"}
+        images={articleExample.images}
+        description={articleExample.description_article}
+        setBasket={setBasket}
+        setTotalPrice={setTotalPrice}
+      /> */}
+      <Footer />
+    </>
+  )
+}
+
+export default App;

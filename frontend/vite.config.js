@@ -2,10 +2,17 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-  server : {
+  server: {
+    open: true,
+
     proxy: {
-      '/api': 'http://localhost:3000'
+      '/api': 'http://localhost:3000',
+      // changeOrigin: true
     }
   },
-  plugins: [react()]
+
+  plugins: [
+    react(),
+
+  ]
 });
