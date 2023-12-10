@@ -2,8 +2,8 @@ import React, { useRef } from 'react'
 
 function CardCarouselItem(props) {
     return (
-        <div id={props.currentSlide} className="carousel-item relative roundered-xl w-full">
-            <a href={props.articleLink}><img src={props.image} className="w-full roundered-xl" /></a>
+        <div id={props.currentSlide} className="carousel-item relative w-full">
+            <a href={props.articleLink}><img src={props.image} className="w-full rounded-xl" /></a>
             <div className="absolute hidden group-hover:flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
                 <button onClick={() => carouselScroll(props.perviousSlide, props.carouselElement)} className="btn btn-circle">❮</button>
                 <button onClick={() => carouselScroll(props.nextSlide, props.carouselElement)} className="btn btn-circle">❯</button>
@@ -70,12 +70,12 @@ function CardImages(props) {
     }
 
     return (props.images.length > 1) ? (
-        <div className="carousel w-full roundered-xl" ref={carouselElement} >
+        <div className={"carousel w-full " + props.className} ref={carouselElement} >
             {addImage()}
         </div>
     ) : (
         <figure>
-            <img src={props.images} className="w-max roundered-xl" alt={props.unique}
+            <img src={props.images} className="w-max" alt={props.unique}
                 key={props.key} />
         </figure>
     )
