@@ -83,7 +83,7 @@ function Navbar(props) {
                 <span className="font-bold text-lg">{props.basket + " article" + isPlurial(props.basket)}</span>
                 <span className="text-neutral font-semibold">{"Total : " + props.totalPrice + " €"}</span>
                 <div className="card-actions">
-                  <button className="btn btn-neutral btn-block">Aller au panier</button>
+                  <a className="btn btn-neutral btn-block" href="/cart">Aller au panier</a>
                 </div>
               </div>
             </div>

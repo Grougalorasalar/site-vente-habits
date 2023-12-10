@@ -94,7 +94,8 @@ function GridCards(props) {
                             description={article.description}
                             typeArticle={article.typeArticle}
                         />
-                    ))}
+                    ))
+                }
             </section>
         </div>
     );

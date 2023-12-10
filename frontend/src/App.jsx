@@ -5,36 +5,16 @@ import Navbar from './Navbar'
 import './index.css'
 import Article from './Article'
 import Footer from './Footer'
+import Cart from './Cart'
+import { nbItemsInBasket, calcTotalPrice } from './Utils'
 
 function Formulaire() {
   return <h1>Formulaire</h1>;
 }
 
 function App() {
-  function nbItemsInBasket() {
-    var basket = JSON.parse(localStorage.getItem("basket"));
-    var nbArticles = 0;
-    if (Array.isArray(basket)) {
-      basket.forEach((element) => {
-        nbArticles = nbArticles + element.quantity;
-      })
-    }
-    return nbArticles;
-  }
-
-  function calcTotalPrice() {
-    var basket = JSON.parse(localStorage.getItem("basket"));
-    var total = 0;
-    basket.forEach((element) => {
-      total = total + element.quantity * element.prix_article
-    })
-    return total;
-  }
-
   const [searchText, setSearchText] = useState('');
-
   const [basket, setBasket] = useState(nbItemsInBasket());
-
   const [totalPrice, setTotalPrice] = useState(calcTotalPrice());
 
   const categories = [
@@ -82,6 +62,7 @@ function App() {
           <Route path="/homme" element={<GridCards gender="Homme" searchText={searchText} />} />
           <Route path="/femme" element={<GridCards gender="Femme" searchText={searchText} />} />
           <Route path="/formulaire" element={<Formulaire />} />
+          <Route path="/cart" element={<Cart totalPrice={totalPrice} />} />
         </Routes>
       </Router>
 
@@ -93,8 +74,6 @@ function App() {
         images={articleExample.images}
         description={articleExample.description_article}
         setBasket={setBasket}
-        nbItemsInBasket={nbItemsInBasket}
-        calcTotalPrice={calcTotalPrice}
         setTotalPrice={setTotalPrice}
       /> */}
       <Footer />
