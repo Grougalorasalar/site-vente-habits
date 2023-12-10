@@ -62,7 +62,7 @@ function App() {
           <Route path="/homme" element={<GridCards gender="Homme" searchText={searchText} />} />
           <Route path="/femme" element={<GridCards gender="Femme" searchText={searchText} />} />
           <Route path="/formulaire" element={<Formulaire />} />
-          <Route path="/cart" element={<Cart totalPrice={totalPrice} />} />
+          <Route path="/cart" element={<Cart totalPrice={totalPrice} setBasket={setBasket} setTotalPrice={setTotalPrice} />} />
         </Routes>
       </Router>
 
@@ -76,6 +76,7 @@ function App() {
         setBasket={setBasket}
         setTotalPrice={setTotalPrice}
       /> */}
+      <div className='h-60'></div>
       <Footer />
     </>
   )

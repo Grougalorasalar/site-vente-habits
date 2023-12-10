@@ -19,7 +19,8 @@ export const calcTotalPrice = () => {
             total = total + element.quantity * element.prix_article
         })
     }
-    return total;
+
+    return total.toFixed(2);
 }
 
 export const isInBasket = (id) => {
@@ -70,4 +71,37 @@ export const addBasket = (id, setBasket, setTotalPrice) => {
             setBasket(nbItemsInBasket());
             setTotalPrice(calcTotalPrice());
         })
+}
+
+export const removeArticleInBasket = (id, setBasket, setTotalPrice) => {
+    var basket = JSON.parse(localStorage.getItem("basket"));
+    console.log("dd")
+    if (Array.isArray(basket)) {
+        JSON.parse(localStorage.getItem("basket")).forEach(function (elt, i) {
+            if (elt.id == id) {
+                if (basket.length == 1) {
+                    localStorage.setItem("basket", JSON.stringify(basket.pop()))
+                } else {
+                    localStorage.setItem("basket", JSON.stringify(basket.splice(i - 1, 1)))
+                }
+                setBasket(nbItemsInBasket())
+                setTotalPrice(calcTotalPrice())
+            }
+        })
+    }
+}
+
+export const changeQuantity = (id, newQuantity, setBasket, setTotalPrice) => {
+    var basket = JSON.parse(localStorage.getItem("basket"));
+    console.log("dd")
+    if (Array.isArray(basket)) {
+        JSON.parse(localStorage.getItem("basket")).forEach(function (elt, i) {
+            if (elt.id == id) {
+                basket[i].quantity = newQuantity
+                localStorage.setItem("basket", JSON.stringify(basket))
+                setBasket(nbItemsInBasket())
+                setTotalPrice(calcTotalPrice())
+            }
+        })
+    }
 }
