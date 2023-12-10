@@ -5,8 +5,6 @@ import InfoForm from './InfoForm';
 const PreviewForm = () => {
     const [isEditing, setIsEditing] = useState(false);
 
-    let key = 0;
-
     const [formData, setFormData] = useState({
         gender: 'Homme',
         couleur: 'Blanc',
@@ -56,12 +54,10 @@ const PreviewForm = () => {
         formData.typeArticle = data.typeArticle;
         formData.prix = data.prix;
         formData.description = data.description;
-        formData.images = data.images;
     };
 
     const handleInfoChange = (data) => {
         formData.urlImages = data.urlImages;
-        // update tabTailles
         formData.taille_xs = data.taille_xs;
         formData.taille_s = data.taille_s;
         formData.taille_m = data.taille_m;
@@ -71,12 +67,6 @@ const PreviewForm = () => {
         formData.marque = data.marque;
         formData.gender = data.gender;
     };
-
-    useEffect(() => {
-
-        setFormData(formData);
-
-    }, [formData]);
 
     return (
         <div className="flex justify-center">

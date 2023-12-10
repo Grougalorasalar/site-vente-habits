@@ -34,6 +34,19 @@ function InfoForm(props) {
         setIsModalOpen(false);
     }
 
+    const removeImages = async () => {
+        setPreviewData({ ...previewData, urlImages: [] });
+        const response = await fetch('/api/temp', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "id_user": 1,
+            }),
+        })
+    }
+
     const handleImageUpload = (uploadImages) => {
         setPreviewData({ ...previewData, urlImages: [] });
         const urlTabImages = []
@@ -153,6 +166,7 @@ function InfoForm(props) {
                         {/* Ajoutez le contenu de la modale ici */}
                         <p>Vous pouvez ajouter jusqu'à 3 images.</p>
                         <ImageUpload onImageUpload={handleImageUpload} />
+                        <button type="button" className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" onClick={removeImages}>Supprimer images existantes</button>
                         <button type="button" className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" onClick={closeModal}>Fermer la fenêtre</button>
                     </Modal>
                 )}
@@ -175,7 +189,7 @@ function InfoForm(props) {
                         </select>
                     </div>
                     <div>
-                        <label className="mb-1 font-bold text-black-700 text-xL">Taille XS</label>
+                        <label className="mb-1 font-bold text-black-700 text-xL block">Taille XS</label>
                         <input
                             type="number"
                             name="taille_xs"
@@ -200,7 +214,7 @@ function InfoForm(props) {
                     <div>
                     </div>
                     <div>
-                        <label className="mb-1 font-bold text-black-700 text-xL">Couleur :</label>
+                        <label className="mb-1 font-bold text-black-700 text-xL block">Couleur :</label>
                         <select
                             name="couleur"
                             value={previewData.couleur}
@@ -246,7 +260,7 @@ function InfoForm(props) {
                     </div>
                     <div>
                     </div>
-                    <div><label className="mb-1 font-bold text-black-700 text-xL">Marque:</label>
+                    <div><label className="mb-1 font-bold text-black-700 text-xL block">Marque:</label>
                         <select
                             name="marque"
                             value={previewData.marque}

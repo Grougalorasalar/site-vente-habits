@@ -14,6 +14,7 @@ function CardForm(props) {
     });
 
     useEffect(() => {
+        console.log(previewData);
         props.onChange(previewData);
     }, [previewData, props]);
 

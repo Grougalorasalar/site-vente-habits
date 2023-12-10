@@ -195,7 +195,7 @@ async function saveImagesTemp(size, body, res) {
 
    if (size === "small") {
       const { data, extension, id_user } = body;
-      // créer un dossier pour l'utilisateur s'il n'existe pas
+
       createFolder("temp" + "/" + id_user);
       // Revenir en arrière : convertir la chaîne JSON en tableau JavaScript
       const uint8ArrayJS2 = JSON.parse(data);
@@ -479,6 +479,18 @@ app.post('/api/temp', async (req, res) => {
    saveImagesTemp(req.body.size, req.body, res);
 }
 );
+
+app.delete('/api/temp', async (req, res) => {
+   const id_user = req.body.id_user;
+
+   const __filename = fileURLToPath(import.meta.url);
+   const __dirname = path.dirname(__filename);
+
+   //supprimer le dossier temporaire de l'utilisateur
+   fs.rmdirSync(path.join(__dirname, 'temp/' + id_user), { recursive: true });
+
+   res.status(200).json({ message: 'Dossier temporaire supprimé' });
+});
 
 // créer un utilisateur
 app.post('/api/users', async (req, res) => {
