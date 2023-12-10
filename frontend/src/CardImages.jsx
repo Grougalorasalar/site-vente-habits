@@ -70,7 +70,7 @@ function CardImages(props) {
     }
 
     return (props.images.length > 1) ? (
-        <div className="carousel w-full max-h-96" ref={carouselElement} >
+        <div className={"carousel w-full " + props.className} ref={carouselElement} >
             {addImage()}
         </div>
     ) : (

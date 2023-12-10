@@ -4,6 +4,7 @@ import SearchBar from './SearchBar';
 
 function Navbar(props) {
 
+
   const categories = () => {
     let tempCategories = []
     for (let i = 0; i < props.categories.length; i++) {
@@ -20,10 +21,57 @@ function Navbar(props) {
 
   const [searchText, setSearchText] = useState('');
 
+  const obj = [
+    {
+      "id": 1,
+      "nom_article": "Nike Sportswear Tech Fleece",
+      "prix_article": 83.99,
+      "description_article": "Chaleur et style en toute simplicité : découvrez le sweat à capuche Nike Sportswear Tech Fleece.",
+      "id_vendeur": 1,
+      "marque": "Nike",
+      "genre": "Homme",
+      "categorie": "Sweat",
+      "couleur": "Noir",
+      "quantity": 1
+    },
+    {
+      "id": 2,
+      "nom_article": " Blazer en sergé de laine ",
+      "prix_article": 449.99,
+      "description_article": "Blazers d'inspiration traditionnelle et silhouettes fluides et libres évoquent le romantisme de l'automne à la campagne",
+      "id_vendeur": 1,
+      "marque": "Ralph Lauren",
+      "genre": "Femme",
+      "categorie": "T-shirt",
+      "couleur": "Gris",
+      "quantity": 2
+    }]
+
+  function totalPrice(basket) {
+    var total = 0;
+    basket.forEach((element) => {
+      total = total + element.quantity * element.prix_article
+    })
+    return total;
+  }
+
+  function nbItemsInBasket() {
+    if (Array.isArray(JSON.parse(localStorage.getItem("basket")))) {
+      return JSON.parse(localStorage.getItem("basket")).length
+    } else {
+      return 0
+    }
+  }
+
+  function isPlurial(nb) {
+    return nb > 1 ? "s" : "";
+  }
+
   useEffect(() => {
     props.onSearch(searchText);
-  }
-    , [searchText]);
+
+  }, [searchText]);
+
 
   return (
     <div className='flex flex-col drawer-content md:px-16 md:pt-6 md:relative md:max-w-screen-xl md:mx-auto'>
@@ -61,20 +109,45 @@ function Navbar(props) {
           <SearchBar onSearch={(searchText) => setSearchText(searchText)} />
         </div>
         <div className="flex items-center justify-end flex-1 gap-4 px-2">
-          <div className="indicator">
-            {/* TODO */}
-
-            <svg width="22" height="20" xmlns="http://www.w3.org/2000/svg" className="cursor-pointer" onClick={(e) => {
-              e.stopPropagation();
-            }}>
-              <path d="M20.925 3.641H3.863L3.61.816A.896.896 0 0 0 2.717 0H.897a.896.896 0 1 0 0 1.792h1l1.031 11.483c.073.828.52 1.726 1.291 2.336C2.83 17.385 4.099 20 6.359 20c1.875 0 3.197-1.87 2.554-3.642h4.905c-.642 1.77.677 3.642 2.555 3.642a2.72 2.72 0 0 0 2.717-2.717 2.72 2.72 0 0 0-2.717-2.717H6.365c-.681 0-1.274-.41-1.53-1.009l14.321-.842a.896.896 0 0 0 .817-.677l1.821-7.283a.897.897 0 0 0-.87-1.114ZM6.358 18.208a.926.926 0 0 1 0-1.85.926.926 0 0 1 0 1.85Zm10.015 0a.926.926 0 0 1 0-1.85.926.926 0 0 1 0 1.85Zm2.021-7.243-13.8.81-.57-6.341h15.753l-1.383 5.53Z" fill="#69707D" fillRule="nonzero" />
-            </svg>
+          <div className="dropdown dropdown-end z-50">
+            <label tabIndex="0" className="btn btn-ghost btn-circle">
+              <div className="indicator">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <span className="badge badge-sm indicator-item">{props.basket}</span>
+              </div>
+            </label>
+            <div tabIndex="0" className="mt-3 card card-compact dropdown-content w-52 bg-base-100 shadow">
+              <div className="card-body">
+                <span className="font-bold text-lg">{props.basket + " article" + isPlurial(props.basket)}</span>
+                <span className="text-neutral font-semibold">{"Total : " + props.totalPrice + " €"}</span>
+                <div className="card-actions">
+                  <button className="btn btn-neutral btn-block">Aller au panier</button>
+                </div>
+              </div>
+            </div>
           </div>
           {/* TODO */}
-          <img
-            alt="User avatar"
-            className="object-cover h-6 px-2 rounded-full cursor-pointer md:h-10 md:px-0 md:border-2 md:border-transparent md:hover:border-primary md:hover:border-2 md:hover:rounded-full"
-          />
+          <div className="dropdown dropdown-end z-50">
+            <label tabIndex="0" className="btn btn-ghost btn-circle avatar">
+              <div className="w-10 rounded-full">
+                <img
+                  alt="User avatar"
+                  className="object-cover h-6 px-2 rounded-full cursor-pointer md:h-10 md:px-0 md:border-2 md:border-transparent md:hover:border-primary md:hover:border-2 md:hover:rounded-full"
+                />
+              </div>
+            </label>
+            <ul tabIndex="0"
+              className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
+              <li><a>Profil</a></li>
+              <li><a>Paramètres</a></li>
+              <li><a>Déconnexion</a></li>
+            </ul>
+          </div>
+
         </div>
       </div>
     </div >

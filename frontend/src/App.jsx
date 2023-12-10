@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import GridCards from './GridCards'
 import Navbar from './Navbar'
@@ -11,8 +11,31 @@ function Formulaire() {
 }
 
 function App() {
+  function nbItemsInBasket() {
+    var basket = JSON.parse(localStorage.getItem("basket"));
+    var nbArticles = 0;
+    if (Array.isArray(basket)) {
+      basket.forEach((element) => {
+        nbArticles = nbArticles + element.quantity;
+      })
+    }
+    return nbArticles;
+  }
+
+  function calcTotalPrice() {
+    var basket = JSON.parse(localStorage.getItem("basket"));
+    var total = 0;
+    basket.forEach((element) => {
+      total = total + element.quantity * element.prix_article
+    })
+    return total;
+  }
 
   const [searchText, setSearchText] = useState('');
+
+  const [basket, setBasket] = useState(nbItemsInBasket());
+
+  const [totalPrice, setTotalPrice] = useState(calcTotalPrice());
 
   const categories = [
     {
@@ -52,27 +75,29 @@ function App() {
 
   return (
     <>
-      <div className=''>
-        <Router>
-          <Navbar categories={categories} onSearch={(searchText) => setSearchText(searchText)} />
-          <Routes>
-            <Route path="/articles" element={<GridCards searchText={searchText} />} />
-            <Route path="/homme" element={<GridCards gender="Homme" searchText={searchText} />} />
-            <Route path="/femme" element={<GridCards gender="Femme" searchText={searchText} />} />
-            <Route path="/formulaire" element={<Formulaire />} />
-          </Routes>
-        </Router>
+      <Router>
+        <Navbar categories={categories} basket={basket} totalPrice={totalPrice} onSearch={(searchText) => setSearchText(searchText)} />
+        <Routes>
+          <Route path="/articles" element={<GridCards searchText={searchText} />} />
+          <Route path="/homme" element={<GridCards gender="Homme" searchText={searchText} />} />
+          <Route path="/femme" element={<GridCards gender="Femme" searchText={searchText} />} />
+          <Route path="/formulaire" element={<Formulaire />} />
+        </Routes>
+      </Router>
 
-        {/* <Article
+      {/* <Article
+        id={articleExample.id}
         nameArticle={articleExample.nom_article}
         typeArticle={articleExample.categorie}
         price={articleExample.prix_article + " €"}
         images={articleExample.images}
         description={articleExample.description_article}
+        setBasket={setBasket}
+        nbItemsInBasket={nbItemsInBasket}
+        calcTotalPrice={calcTotalPrice}
+        setTotalPrice={setTotalPrice}
       /> */}
-        <Footer />
-      </div>
-
+      <Footer />
     </>
   )
 }

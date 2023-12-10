@@ -16,7 +16,7 @@ function Card(props) {
 
     return (
         <div className="group card glass w-96 bg-base-100 shadow-xl roundered-xl" >
-            <CardImages images={props.images} unique={props.nameArticle} articleLink={props.articleLink} />
+            <CardImages className={"max-h-96"} images={props.images} unique={props.nameArticle} articleLink={props.articleLink} />
             <div className='card-body'>
                 <span className="badge">{props.typeArticle || "Product Type"}</span>
                 <h2 className="card-title">
