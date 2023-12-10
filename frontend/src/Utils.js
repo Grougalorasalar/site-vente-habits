@@ -47,26 +47,18 @@ export const addBasket = (id, setBasket, setTotalPrice) => {
         .then((data) => {
             var verify = isInBasket(id)
             var basket = JSON.parse(localStorage.getItem("basket"))
-            console.log(verify)
 
             if (!Number.isInteger(verify)) {
                 data.article.quantity = 1
                 if (Array.isArray(basket)) {
-                    console.log("TEST1")
-                    console.log(data.article)
-                    localStorage.setItem("basket", JSON.stringify(basket.push(data.article)))
-                    console.log(basket)
+                    basket.push(data.article)
+                    localStorage.setItem("basket", JSON.stringify(basket))
                 } else {
-                    console.log("TEST2")
-                    console.log(data.article)
                     localStorage.setItem("basket", JSON.stringify([data.article]))
-                    console.log(basket)
                 }
             } else {
-                console.log("TEST3")
                 basket[verify].quantity = basket[verify].quantity + 1
                 localStorage.setItem("basket", JSON.stringify(basket))
-                console.log(basket)
             }
             setBasket(nbItemsInBasket());
             setTotalPrice(calcTotalPrice());
@@ -75,7 +67,6 @@ export const addBasket = (id, setBasket, setTotalPrice) => {
 
 export const removeArticleInBasket = (id, setBasket, setTotalPrice) => {
     var basket = JSON.parse(localStorage.getItem("basket"));
-    console.log("dd")
     if (Array.isArray(basket)) {
         JSON.parse(localStorage.getItem("basket")).forEach(function (elt, i) {
             if (elt.id == id) {

@@ -25,12 +25,12 @@ function CardForm(props) {
                         onChange={(e) => setPreviewData({ ...previewData, typeArticle: e.target.value })}
                         className="input w-21 h-5 origin-top input-bordered"
                     >
-                        <option value="t-shirt">T-shirt</option>
-                        <option value="pantalon">Pantalon</option>
-                        <option value="sweat">Sweat</option>
-                        <option value="casquette">Casquette</option>
-                        <option value="chaussure">Chaussure</option>
-                        <option value="autre">Autre</option>
+                        <option value="T-shirt">T-shirt</option>
+                        <option value="Pantalon">Pantalon</option>
+                        <option value="Sweat">Sweat</option>
+                        <option value="Casquette">Casquette</option>
+                        <option value="Chaussure">Chaussure</option>
+                        <option value="Autre">Autre</option>
                     </select>
                 ) : (
                     previewData.typeArticle || "Product Type"
