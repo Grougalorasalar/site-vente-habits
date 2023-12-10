@@ -7,6 +7,7 @@ import PreviewForm from './PreviewForm'
 import Footer from './Footer'
 import Cart from './Cart'
 import { nbItemsInBasket, calcTotalPrice } from './Utils'
+import Article from './Article'
 
 function App() {
   const [searchText, setSearchText] = useState('');
@@ -59,6 +60,16 @@ function App() {
           <Route path="/femme" element={<GridCards gender="Femme" searchText={searchText} />} />
           <Route path="/formulaire" element={<PreviewForm />} />
           <Route path="/cart" element={<Cart totalPrice={totalPrice} setBasket={setBasket} setTotalPrice={setTotalPrice} />} />
+          <Route path="/article/:id" element={<Article
+            id={articleExample.id}
+            nameArticle={articleExample.nom_article}
+            typeArticle={articleExample.categorie}
+            price={articleExample.prix_article + " €"}
+            images={articleExample.images}
+            description={articleExample.description_article}
+            setBasket={setBasket}
+            setTotalPrice={setTotalPrice}
+          />} />
         </Routes>
       </Router>
 
