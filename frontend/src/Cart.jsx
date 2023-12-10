@@ -82,7 +82,7 @@ function Cart(props) {
 
     return (
         <>
-            <section className='grid grid-cols-3 w-fit justify-items-center justify-center m-auto' id='cart'>
+            <section className='grid md:grid-cols-3 xs:grid-cols-1 w-fit justify-items-center justify-center m-auto' id='cart'>
                 <div className='col-span-2 max-w-3xl'>
                     <h2 className='font-bold p-4 text-3xl'>Panier</h2>
                     {getArt()}
