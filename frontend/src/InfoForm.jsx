@@ -287,6 +287,7 @@ function InfoForm(props) {
                             className="input w-21 h-5 origin-top input-bordered"
                         >
                             <option value="Nike">Nike</option>
+                            <option value="Adidas">Lacoste</option>
                             <option value="Project X Paris">Project X Paris</option>
                             <option value="Ralph Lauren">Ralph Lauren</option>
                             <option value="Adidas">Adidas</option>
