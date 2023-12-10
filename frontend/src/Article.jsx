@@ -42,7 +42,7 @@ function Article(props) {
                 <p className='text-left font-semibold'>{article ? article.price : ''}</p>
             </div>
             <div className=''>
-                <h2>Taille</h2>
+                <h2></h2>
             </div>
             <div className='flex flex-col justify-center items-center gap-4'>
                 <button className='btn btn-neutral rounded-full w-72' onClick={() => { addBasket(id, props.setBasket, props.setTotalPrice) }}>Ajouter au panier</button>
