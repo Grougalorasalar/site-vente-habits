@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Card from './Card.jsx';
+import { Route } from 'react-router-dom';
 
 function GridCards(props) {
     const [articles, setArticles] = useState([]);
@@ -50,7 +51,7 @@ function GridCards(props) {
                         id: article.id,
                         nameArticle: article.nom_article,
                         price: article.prix_article + "€",
-                        articleLink: "#article-link",
+                        articleLink: "article/" + article.id,
                         description: article.description_article,
                         typeArticle: article.categorie,
                         images,
