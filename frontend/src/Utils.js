@@ -71,9 +71,11 @@ export const removeArticleInBasket = (id, setBasket, setTotalPrice) => {
         JSON.parse(localStorage.getItem("basket")).forEach(function (elt, i) {
             if (elt.id == id) {
                 if (basket.length == 1) {
-                    localStorage.setItem("basket", JSON.stringify(basket.pop()))
+                    basket.pop()
+                    localStorage.setItem("basket", JSON.stringify(basket))
                 } else {
-                    localStorage.setItem("basket", JSON.stringify(basket.splice(i - 1, 1)))
+                    basket.splice(i, 1)
+                    localStorage.setItem("basket", JSON.stringify(basket))
                 }
                 setBasket(nbItemsInBasket())
                 setTotalPrice(calcTotalPrice())

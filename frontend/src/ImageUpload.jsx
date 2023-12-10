@@ -4,7 +4,7 @@ function ImageUpload({ onImageUpload }) {
   const [tabImages, setTabImages] = useState([]);
   const [responseMessage, setResponseMessage] = useState('');
   const [responseClassname, setResponseClassname] = useState('text-red-500 mt-2');
-  const [buttonClassName, setButtonClassName] = useState('bg-blue-500 text-white px-4 py-2 rounded font-medium');
+  const [buttonClassName, setButtonClassName] = useState('bg-neutral text-white px-4 py-2 rounded font-medium');
 
   const handleUpload = async (e) => {
     e.preventDefault();
